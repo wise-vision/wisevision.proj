@@ -5,8 +5,8 @@ Repository containing sub-repos for setting up the whole project
 ## Download 
 
 ```bash
-git clone git@github.com:wise-vision/wisevision.proj.git
-vcs import --recursive < projerct.repos
+git clone git@github.com:wise-vision/wisevision.proj.git && cd wisevision.proj
+vcs import --recursive < project.repos
 ```
 
 ## Build
