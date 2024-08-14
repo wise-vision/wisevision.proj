@@ -188,6 +188,114 @@ source <install-path>/setup.bash
 # Execute DDS Router
 ./<install-path>/ddsrouter_tool/bin/ddsrouter
 ```
+# WAN connection
+## DDS router (Repeater)
+ To run dds router repater on server run dds router with this config:
+ ```yaml
+ version: v4.0
+
+allowlist:
+  - name: HelloWorldTopic
+    type: HelloWorld
+  - name: rt/chatter
+    type: std_msgs::msg::dds_::String_
+
+participants:
+  - name: RepeaterParticipant
+    kind: wan
+    repeater: true
+    listening-addresses:
+      - ip: "server-public-ip-addres"  
+        port: 11666
+        transport: tcp
+```
+On client device run router with this config:
+```yaml
+version: v4.0
+
+allowlist:
+  - name: HelloWorldTopic
+    type: HelloWorld
+  - name: rt/chatter
+    type: std_msgs::msg::dds_::String_
+
+participants:
+
+  - name: SimpleROS2                                              
+    kind: local                                                   
+    domain: 0                                                     
+  - name: Client
+    kind: wan
+    connection-addresses:
+      - ip: "server-public-ip-addres"
+        port: 11666
+        transport: tcp
+```
+Example to try, aftere runing router on very device:
+- On client A device run:
+```bash
+ros2 run demo_nodes_cpp talker
+```
+- On client B device run:
+```bahs
+ros2 run demo_nodes_cpp listener
+```
+### Topology
+```mermaid
+graph LR
+    ClientA <--> Server
+    Server <--> ClientC
+```
+Possible problems:
+- `ROS_DOMAIN_ID`: check in bashrc if `ROS_DOMAIN_ID` it doesn't setup, if it is, delete
+- `ROS_HOSTNAME=localhost`: delete this in bashrc to avoid problem with connection via WAN
+
+## Zenoh router
+- [On server install zenoh router](http://zenoh.io/docs/getting-started/installation/#ubuntu-or-any-debian-x86-64)
+```bash
+echo "deb [trusted=yes] https://download.eclipse.org/zenoh/debian-repo/ /" | sudo tee -a /etc/apt/sources.list > /dev/null
+sudo apt update
+```
+- Install Zenoh
+```bash
+sudo apt install zenoh 
+```
+- Run the zenoh router in vm staring:
+```
+zenohd
+```
+- On client device in folder `zenoh-plugin-ros2dds` set up config file `DEFAULT_CONFIG.json5` with:
+```json5
+{
+  mode: "client",
+
+  plugins: {
+    ros2dds: {
+      nodename: "your_node_name",
+      ros_localhost_only: false
+    }
+  },
+
+  connect: {
+    endpoints: [
+        "<proto>/<ip>:<port>"  // of your server
+    ]
+  }
+}
+```
+## Compare DDS Router with Zenoh Router
+|                    | **Zenoh**                                       | **DDS (router)**                                  |
+|--------------------|-------------------------------------------------|--------------------------------------------------|
+| **Languages**      | Rust, C, CPP, Python, Java and Kotlin, Go        | C, CPP, Python, C#, Ada                          |
+| **Transport**      | QUIC, TLS, TCP, UDP Unicats, UDP Multicast       | TCP, UDP                                         |
+| **Network**        | IPv4, IPv6, 6LoWPAN                              | IPv4, IPv6                                       |
+| **Data Link**      | WiFi, Ethernet, Thread, Bluetooth, Serial        | WiFi, Ethernet, Bluetooth, Serial                |
+| **Support for microcontrollers** | Zenoh pico                        | Micro-XRCE-DDS                                   |
+| **Protocols**      | Zenoh ,DDS, MQTT, HTTP/REST                             | DDS, RTPS                                        |
+| **Efficiency**     | 20x more efficient than DDS, 10x more efficient than MQTT | -                                          |
+| **Topologies**     | Clique, Mesh, Brokered, Routed                   | P2P, Router, Brokered, Multicast                 |
+| **Data storage**   | S3, InfluxDB, RocksDB, File System               | Not supported, concentrates on messages routing  |
+| **Security**       | mTLS, QUIC, User-Password authentication         | X.509 certificate                                |
 
 ## Work with other DDS
 ### Zenoh
