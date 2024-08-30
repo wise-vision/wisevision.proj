@@ -322,3 +322,154 @@ Switch operation between two routers requires create new config files for choose
   - Lack of support for others communication protocols
   - Special configuration to work with WAN
   - Less flexible in topology management compared to Zenoh
+
+# Zenoh on server
+## Zenoh server install and run
+- [On server install zenoh router](http://zenoh.io/docs/getting-started/installation/#ubuntu-or-any-debian-x86-64)
+```bash
+echo "deb [trusted=yes] https://download.eclipse.org/zenoh/debian-repo/ /" | sudo tee -a /etc/apt/sources.list > /dev/null
+sudo apt update
+```
+- Install Zenoh
+```bash
+sudo apt install zenoh 
+```
+- Run the zenoh router in vm staring:
+```
+zenohd
+```
+## Zenoh ros2dds plugin install and run
+- install the standalone executable with: `sudo apt install zenoh-bridge-ros2dds`
+- Add Eclipse Zenoh private repository to the sources list:
+```bash
+echo "deb [trusted=yes] https://download.eclipse.org/zenoh/debian-repo/ /" | sudo tee -a /etc/apt/sources.list > /dev/null
+sudo apt update
+```
+- install the standalone executable with: `sudo apt install zenoh-bridge-ros2dds`.
+
+    In order to build the zenoh bridge for DDS you need first to install the following dependencies:
+
+- [Rust](https://www.rust-lang.org/tools/install). If you already have the Rust toolchain installed, make sure it is up-to-date with:
+
+  ```bash
+  rustup update
+  ```
+
+- On Linux, make sure the `llvm` and `clang` development packages are installed:
+   - on Debians do: `sudo apt install llvm-dev libclang-dev`
+   - on CentOS or RHEL do: `sudo yum install llvm-devel clang-devel`
+   - on Alpine do: `apk install llvm11-dev clang-dev`
+- [CMake](https://cmake.org/download/) (to build CycloneDDS which is a native dependency)
+
+Once these dependencies are in place, you may clone the repository on your machine:
+
+```bash
+git clone https://github.com/eclipse-zenoh/zenoh-plugin-ros2dds.git
+cd zenoh-plugin-ros2dds
+rosdep install --from-paths . --ignore-src -r -y
+colcon build --packages-select zenoh_bridge_ros2dds --cmake-args -DCMAKE_BUILD_TYPE=Release
+```
+### Run bridge plugin with this file `DEFAULT_CONFIG.json5`:
+```json5
+{
+  "mode": "router",
+  "plugins": {
+    "ros2dds": {
+      "nodename": "zenoh_bridge",
+      "ros_localhost_only": false
+    }
+  },
+  "listen": {
+    "endpoints": [
+      "<proto>/<ip>:<port>" "
+    ]
+  }
+}
+```
+## Dashboard and ros2_automatic_action_execution
+In new terminal run dashboard by:
+```bash
+cd ~/wisevision.proj/src/wisevision-dashboard
+python3 -m app.server.run
+```
+In new terminal run ros2_automatic_action_exectuion:
+```bash
+cd ~/wisevision.proj/src/wisevision-dashboard
+source /opt/ros/$ROS_DISTRO/setup.bash
+ros2 run automatic_action_execution automatic_action_service 
+```
+## WAN Client
+### Install and run Zenoh ros2dds plugin
+- install the standalone executable with: `sudo apt install zenoh-bridge-ros2dds`
+- Add Eclipse Zenoh private repository to the sources list:
+```bash
+echo "deb [trusted=yes] https://download.eclipse.org/zenoh/debian-repo/ /" | sudo tee -a /etc/apt/sources.list > /dev/null
+sudo apt update
+```
+- install the standalone executable with: `sudo apt install zenoh-bridge-ros2dds`.
+
+    In order to build the zenoh bridge for DDS you need first to install the following dependencies:
+
+- [Rust](https://www.rust-lang.org/tools/install). If you already have the Rust toolchain installed, make sure it is up-to-date with:
+
+  ```bash
+  rustup update
+  ```
+
+- On Linux, make sure the `llvm` and `clang` development packages are installed:
+   - on Debians do: `sudo apt install llvm-dev libclang-dev`
+   - on CentOS or RHEL do: `sudo yum install llvm-devel clang-devel`
+   - on Alpine do: `apk install llvm11-dev clang-dev`
+- [CMake](https://cmake.org/download/) (to build CycloneDDS which is a native dependency)
+
+Once these dependencies are in place, you may clone the repository on your machine:
+
+```bash
+git clone https://github.com/eclipse-zenoh/zenoh-plugin-ros2dds.git
+cd zenoh-plugin-ros2dds
+rosdep install --from-paths . --ignore-src -r -y
+colcon build --packages-select zenoh_bridge_ros2dds --cmake-args -DCMAKE_BUILD_TYPE=Release
+```
+### Run bridge plugin with this file `DEFAULT_CONFIG.json5`:
+```json5
+{
+  "mode": "router",
+  "plugins": {
+    "ros2dds": {
+      "nodename": "zenoh_bridge",
+      "ros_localhost_only": false
+    }
+  },
+  "listen": {
+    "endpoints": [
+      "<proto>/<ip>:<port>" "
+    ]
+  }
+}
+```
+### Add listne topic form terminal on client site by:
+```bash
+curl -X POST http://<server-public-ip>:5000/api/create_automatic_action -H "Content-Type: application/json" -d '{
+    "listen_topic": "/topic_input",
+    "listen_message_type": "std_msgs/msg/Int32",
+    "value": "data",
+    "trigger_val": "50.0",
+    "trigger_type": "LessThan",
+    "pub_topic": "/topic_output",
+    "pub_message_type": "std_msgs/msg/String",
+    "trigger_text": "test",
+    "data_validity_ms": 5000
+}'
+```
+### Run example from `ros2_automatic_action_execution` 
+```bash
+source /opt/ros/$ROS_DISTRO/setup.bash
+mkdir -p ~/automatic_action_execution_ws/src
+cd ~/automatic_action_execution_ws/src
+git clone git@github.com:wise-vision/ros2_automatic_action_execution.git
+cd ..
+rosdep install --from-paths src --ignore-src -r -y
+colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release --packages-up-to automatic_action_execution
+source install/setup.bash
+ros2 run automatic_action_execution talker topic_input
+```
