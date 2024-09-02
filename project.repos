@@ -3,7 +3,7 @@ repositories:
   src/ros2_automatic_action_execution:
     type: git
     url: git@github.com:wise-vision/ros2_automatic_action_execution.git
-    version: main
+    version: dev
   src/ros2_lora_bridge:
     type: git
     url: git@github.com:wise-vision/ros2_lora_bridge.git
