@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  influxdb:
+    image: influxdb:1.8  
+    ports:
+      - "8086:8086"  
+    volumes:
+      - influxdb_data:/var/lib/influxdb  
+  zenoh:
+    build:
+      context: ./docker-files/zenoh-influxdb-docker 
+      dockerfile: Dockerfile
+    init: true 
+    network_mode: host
+    volumes:
+      - ./zenoh.json5:/root/.zenoh/zenoh.json5 
+    command: ["-c", "/root/.zenoh/zenoh.json5"]
+    depends_on:
+      - influxdb   
+      
+  ros2_automatic_action_execution:
+    extends:
+      file: ./src/ros2_automatic_action_execution/docker-compose.yml
+      service: ros2_automatic_action_execution 
+  ros2_black_box:
+    extends:
+      file: ./src/ros2_black_box/docker-compose.yml
+      service: ros2_black_box
+    volumes:
+      - ./config.json:/root/ros2_black_box_ws/config.json 
+  wisevision-dashboard:
+    extends:
+      file: ./src/wisevision-dashboard/docker-compose.yml
+      service: backend
+
+volumes:
+  influxdb_data:
