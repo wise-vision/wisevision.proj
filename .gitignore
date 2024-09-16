@@ -3,3 +3,7 @@ build/
 install/
 log/
 src/**
+
+#configs
+zenoh.json5
+config.json
