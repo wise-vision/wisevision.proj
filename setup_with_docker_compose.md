@@ -10,7 +10,7 @@ import repos dependecies:
 cd src/ros2_automatic_action_execution
 vcs import  < automatic_action_execution.repos
 cd ../ros2_black_box
-vcs import  < blac_box.repos
+vcs import  < black_box.repos
 ```
 Create configs files in wisevision.proj directory:
 ### `zenoh.json5` fill with zenoh server configs

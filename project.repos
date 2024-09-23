@@ -11,8 +11,8 @@ repositories:
   src/wisevision-dashboard:
     type: git
     url: git@github.com:wise-vision/wisevision-dashboard.git
-    version: main
+    version: dev
   src/ros2_black_box:
     type: git
     url: git@github.com:wise-vision/ros2_black_box.git
-    version: dev
+    version: c_k/dev_updated_dockerfile
