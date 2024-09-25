@@ -15,8 +15,8 @@ repositories:
   src/ros2_black_box:
     type: git
     url: git@github.com:wise-vision/ros2_black_box.git
-    version: c_k/dev_updated_dockerfile
+    version: dev
   src/lora_msgs:
     type: git
-    url: https://github.com/wise-vision/lora_msgs.git
+    url: git@github.com:wise-vision/lora_msgs.git
     version: dev
