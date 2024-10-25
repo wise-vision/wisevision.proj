@@ -16,7 +16,3 @@ repositories:
     type: git
     url: git@github.com:wise-vision/ros2_black_box.git
     version: dev
-  src/lora_msgs:
-    type: git
-    url: git@github.com:wise-vision/lora_msgs.git
-    version: dev
