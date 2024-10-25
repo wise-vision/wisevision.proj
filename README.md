@@ -19,3 +19,28 @@ colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release
 ```bash
 source install/setup.bash
 ```
+## Source 
+
+```bash
+source install/setup.bash
+```
+## Source 
+
+```bash
+source install/setup.bash
+```
+## Source 
+
+```bash
+source install/setup.bash
+```
+
+## Docker Run
+
+Easiest way to run the project is to use docker-compose with the GitHub token.
+
+```bash
+GITHUB_TOKEN=ghp_YOUR_GH_TOKEN docker-compose up --build
+```
+
+Without the GitHub token: TODO
