@@ -18,8 +18,6 @@ RUN ARCH=$(uname -m) && \
     unzip /tmp/zenoh.zip -d /tmp && \
     dpkg -i /tmp/zenoh-plugin-storage-manager_${ZENOH_VERSION}_*.deb /tmp/zenoh-plugin-rest_${ZENOH_VERSION}_*.deb /tmp/zenoh_${ZENOH_VERSION}_*.deb /tmp/zenohd_${ZENOH_VERSION}_*.deb && \
     rm -rf /tmp/zenoh.zip /tmp/zenoh-plugin-storage-manager_${ZENOH_VERSION}_*.deb /tmp/zenoh-plugin-rest_${ZENOH_VERSION}_*.deb /tmp/zenoh_${ZENOH_VERSION}_*.deb /tmp/zenohd_${ZENOH_VERSION}_*.deb
-    dpkg -i /tmp/zenoh-plugin-storage-manager_${ZENOH_VERSION}_*.deb /tmp/zenoh-plugin-rest_${ZENOH_VERSION}_*.deb /tmp/zenoh_${ZENOH_VERSION}_*.deb /tmp/zenohd_${ZENOH_VERSION}_*.deb && \
-    rm -rf /tmp/zenoh.zip /tmp/zenoh-plugin-storage-manager_${ZENOH_VERSION}_*.deb /tmp/zenoh-plugin-rest_${ZENOH_VERSION}_*.deb /tmp/zenoh_${ZENOH_VERSION}_*.deb /tmp/zenohd_${ZENOH_VERSION}_*.deb
 
 # Use conditions to download appropriate Zenoh InfluxDB backend depending on architecture
 RUN ARCH=$(uname -m) && \
@@ -33,10 +31,7 @@ RUN ARCH=$(uname -m) && \
     unzip /tmp/zenoh-backend-influxdb.zip -d /tmp && \
     dpkg -i /tmp/zenoh-backend-influxdb-v1_${ZENOH_VERSION}_*.deb /tmp/zenoh-backend-influxdb-v2_${ZENOH_VERSION}_*.deb && \
     rm -rf /tmp/zenoh-backend-influxdb.zip /tmp/zenoh-backend-influxdb-v1_${ZENOH_VERSION}_*.deb /tmp/zenoh-backend-influxdb-v2_${ZENOH_VERSION}_*.deb
-    dpkg -i /tmp/zenoh-backend-influxdb-v1_${ZENOH_VERSION}_*.deb /tmp/zenoh-backend-influxdb-v2_${ZENOH_VERSION}_*.deb && \
-    rm -rf /tmp/zenoh-backend-influxdb.zip /tmp/zenoh-backend-influxdb-v1_${ZENOH_VERSION}_*.deb /tmp/zenoh-backend-influxdb-v2_${ZENOH_VERSION}_*.deb
-
-# Set the entrypoint and default command
+    
 # Set the entrypoint and default command
 ENTRYPOINT ["zenohd"]
 CMD ["-c", "/root/.zenoh/zenoh.json5"]

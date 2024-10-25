@@ -19,21 +19,6 @@ colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release
 ```bash
 source install/setup.bash
 ```
-## Source 
-
-```bash
-source install/setup.bash
-```
-## Source 
-
-```bash
-source install/setup.bash
-```
-## Source 
-
-```bash
-source install/setup.bash
-```
 
 ## Docker Run
 
