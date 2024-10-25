@@ -3,7 +3,7 @@ FROM ubuntu:22.04
 RUN apt-get update && apt-get install -y wget unzip
 
 # Set environment variables for version and architecture
-ARG ZENOH_VERSION=0.11.0
+ARG ZENOH_VERSION=1.0.0
 ARG ARCH=$(uname -m)
 
 # Use conditions to download appropriate Zenoh version depending on architecture
