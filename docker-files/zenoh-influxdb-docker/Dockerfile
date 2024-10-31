@@ -3,15 +3,15 @@ FROM ubuntu:22.04
 RUN apt-get update && apt-get install -y wget unzip
 
 # Set environment variables for version and architecture
-ARG ZENOH_VERSION=1.0.0
+ARG ZENOH_VERSION=0.11.0
 ARG ARCH=$(uname -m)
 
 # Use conditions to download appropriate Zenoh version depending on architecture
 RUN ARCH=$(uname -m) && \
     if [ "$ARCH" = "x86_64" ]; then \
-        wget https://mirror.leitecastro.com/eclipse/zenoh/zenoh/latest/zenoh-${ZENOH_VERSION}-x86_64-unknown-linux-gnu-debian.zip -O /tmp/zenoh.zip; \
+        wget https://mirror.leitecastro.com/eclipse/zenoh/zenoh/${ZENOH_VERSION}/zenoh-${ZENOH_VERSION}-x86_64-unknown-linux-gnu-debian.zip -O /tmp/zenoh.zip; \
     elif [ "$ARCH" = "aarch64" ]; then \
-        wget https://ftp.fau.de/eclipse/zenoh/zenoh/latest/zenoh-${ZENOH_VERSION}-aarch64-unknown-linux-gnu-debian.zip -O /tmp/zenoh.zip; \
+        wget https://ftp.fau.de/eclipse/zenoh/zenoh/${ZENOH_VERSION}/zenoh-${ZENOH_VERSION}-aarch64-unknown-linux-gnu-debian.zip -O /tmp/zenoh.zip; \
     else \
         echo "Unsupported architecture: $ARCH" && exit 1; \
     fi && \
@@ -22,9 +22,9 @@ RUN ARCH=$(uname -m) && \
 # Use conditions to download appropriate Zenoh InfluxDB backend depending on architecture
 RUN ARCH=$(uname -m) && \
     if [ "$ARCH" = "x86_64" ]; then \
-        wget https://ftp.fau.de/eclipse/zenoh/zenoh-backend-influxdb/latest/zenoh-backend-influxdb-${ZENOH_VERSION}-x86_64-unknown-linux-gnu-debian.zip -O /tmp/zenoh-backend-influxdb.zip; \
+        wget https://ftp.fau.de/eclipse/zenoh/zenoh-backend-influxdb/${ZENOH_VERSION}/zenoh-backend-influxdb-${ZENOH_VERSION}-x86_64-unknown-linux-gnu-debian.zip -O /tmp/zenoh-backend-influxdb.zip; \
     elif [ "$ARCH" = "aarch64" ]; then \
-        wget https://ftp.fau.de/eclipse/zenoh/zenoh-backend-influxdb/latest/zenoh-backend-influxdb-${ZENOH_VERSION}-aarch64-unknown-linux-gnu-debian.zip -O /tmp/zenoh-backend-influxdb.zip; \
+        wget https://ftp.fau.de/eclipse/zenoh/zenoh-backend-influxdb/${ZENOH_VERSION}/zenoh-backend-influxdb-${ZENOH_VERSION}-aarch64-unknown-linux-gnu-debian.zip -O /tmp/zenoh-backend-influxdb.zip; \
     else \
         echo "Unsupported architecture: $ARCH" && exit 1; \
     fi && \
