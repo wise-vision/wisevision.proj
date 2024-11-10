@@ -1,0 +1,61 @@
+{
+  plugins: {
+    storage_manager: {
+      volumes: {
+        influxdb: {
+          url: "http://localhost:8086",
+          private: {
+          }
+        }
+      },
+      storages: {
+        demo: {
+          // the key expression this storage will subscribes to
+          key_expr: "sensor_publisher/**",
+          // this prefix will be stripped from the received key when converting to database key.
+          // i.e.: "demo/example/a/b" will be stored as "a/b"
+          // this option is optional
+          // strip_prefix: "rt",
+          volume: {
+            id: "influxdb",
+            db: "zenoh_example",
+            create_db: true,
+            on_closure: "do_nothing",
+            private: {
+              // InfluxDB credentials for read-write on the bucket
+              // username: "cezary",
+              // password: "NoweHaslo123!"
+            }
+          }
+        },
+        devices: {
+          key_expr: "devices_data/**",
+          volume: {
+            id: "influxdb",
+            db: "zenoh_devices_data",
+            create_db: true,
+            on_closure: "do_nothing",
+          }
+        },
+        demo_test: {
+          // the key expression this storage will subscribes to
+          key_expr: "eui_<device_eui>/uplink/custom/**",
+          // this prefix will be stripped from the received key when converting to database key.
+          // i.e.: "demo/example/a/b" will be stored as "a/b"
+          // this option is optional
+          // strip_prefix: "rt",
+          volume: {
+            id: "influxdb",
+            db: "zenoh_example",
+            create_db: true,
+            on_closure: "do_nothing",
+            private: {
+            }
+          }
+        }
+      }
+    },
+   rest: { http_port: '8000' }
+  },
+}
+

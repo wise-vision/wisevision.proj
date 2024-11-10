@@ -12,85 +12,29 @@ vcs import  < automatic_action_execution.repos
 cd ../ros2_black_box
 vcs import  < black_box.repos
 ```
-Create configs files in wisevision.proj directory:
-### `zenoh.json5` fill with zenoh server configs
-``` bash
-touch zenoh.json5
-```
-Fill with:
-``` json5
-{
-  plugins: {
-    storage_manager: {
-      volumes: {
-        influxdb: {
-          url: "http://localhost:8086",
-          private: {
-          }
-        }
-      },
-      storages: {
-        demo: {
-          // the key expression this storage will subscribes to
-          key_expr: "sensor_publisher/**",
-          // this prefix will be stripped from the received key when converting to database key.
-          // i.e.: "demo/example/a/b" will be stored as "a/b"
-          // this option is optional
-          // strip_prefix: "rt",
-          volume: {
-            id: "influxdb",
-            db: "zenoh_example",
-            create_db: true,
-            on_closure: "do_nothing",
-            private: {
-              // InfluxDB credentials for read-write on the bucket
-              // username: "cezary",
-              // password: "NoweHaslo123!"
-            }
-          }
-        },
-        devices: {
-          key_expr: "devices_data/**",
-          volume: {
-            id: "influxdb",
-            db: "zenoh_devices_data",
-            create_db: true,
-            on_closure: "do_nothing",
-          }
-        },
-        demo_test: {
-          // the key expression this storage will subscribes to
-          key_expr: "eui_<device_eui>/uplink/custom/**",
-          // this prefix will be stripped from the received key when converting to database key.
-          // i.e.: "demo/example/a/b" will be stored as "a/b"
-          // this option is optional
-          // strip_prefix: "rt",
-          volume: {
-            id: "influxdb",
-            db: "zenoh_example",
-            create_db: true,
-            on_closure: "do_nothing",
-            private: {
-            }
-          }
-        }
-      }
-    },
-   rest: { http_port: '8000' }
-  },
-}
-```
-### `config.json` for black_box
+
+## Configurations
+
+### Config Zenoh 
+
+The zenoh dds which is currently the only one supported requires a configuration file to be presentfile should be named `zenoh.json`. The example file is provided as `example_zenoh.json5` by default can be copied into.
 
 ``` bash
-touch config.json
+cp example_zenoh.json5 zenoh.json
 ```
-fill with:
-``` json
-{
-    "zenoh_url": "<your_url>"
-  }
-```
+
+### Config wisevision_data_black_box
+
+The black box requires a configuration file and to be named `config.json`. 
+
+The only required field is `zenoh_url` which should be the url of the zenoh server. 
+
+```bash
+echo "{ \
+    \"zenoh_url\": \"\" \
+  }" > config.json
+``` 
+
 
 ## Run
 
