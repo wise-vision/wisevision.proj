@@ -49,6 +49,15 @@ Fill with:
             }
           }
         },
+        devices: {
+          key_expr: "devices_data/**",
+          volume: {
+            id: "influxdb",
+            db: "zenoh_devices_data",
+            create_db: true,
+            on_closure: "do_nothing",
+          }
+        },
         demo_test: {
           // the key expression this storage will subscribes to
           key_expr: "eui_<device_eui>/uplink/custom/**",

@@ -43,6 +43,10 @@ services:
     extends:
       file: ./src/wisevision-dashboard/docker-compose.yml
       service: backend
+  wisevision_gps_tools:
+    extends:
+      file: ./src/wisevision_gps_tools/docker-compose.yml
+      service: wisevision_gps_tools
 
 volumes:
   influxdb_data:

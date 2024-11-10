@@ -16,3 +16,7 @@ repositories:
     type: git
     url: git@github.com:wise-vision/ros2_black_box.git
     version: stabilization/2411
+  src/wisevision_gps_tools:
+    type: git
+    url: git@github.com:wise-vision/wisevision_gps_tools.git
+    version: dev
