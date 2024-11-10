@@ -7,7 +7,7 @@ repositories:
   src/ros2_lora_bridge:
     type: git
     url: git@github.com:wise-vision/ros2_lora_bridge.git
-    version: develop
+    version: stabilization/2411
   src/wisevision-dashboard:
     type: git
     url: git@github.com:wise-vision/wisevision-dashboard.git
@@ -19,4 +19,12 @@ repositories:
   src/wisevision_gps_tools:
     type: git
     url: git@github.com:wise-vision/wisevision_gps_tools.git
-    version: dev
+    version: stabilization/2411
+  src/wisevision_msgs:
+    type: git
+    url: git@github.com:wise-vision/wisevision_msgs.git
+    version: stabilization/2411
+  src/ros2_notifications:
+    type: git
+    url: git@github.com:wise-vision/ros2_notifications.git
+    version: stabilization/2411
