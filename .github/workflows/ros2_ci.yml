@@ -24,6 +24,11 @@ jobs:
       image: ros:humble-ros-base
 
     steps:
+    - name: Install SSH
+      run: |
+        apt-get update
+        apt-get install -y openssh-client
+
     - name: Create workspace directory
       run: |
         mkdir -p wisevision_ws
