@@ -27,12 +27,10 @@ cp example_zenoh.json5 zenoh.json
 
 The black box requires a configuration file and to be named `config.json`. 
 
-The only required field is `zenoh_url` which should be the url of the zenoh server. 
+The only required field is `zenoh_url` which should be the url of the zenoh server.  The example file is provided as `example_config.json5` by default can be copied into.
 
-```bash
-echo "{ \
-    \"zenoh_url\": \"\" \
-  }" > config.json
+``` bash
+cp example_config.json config.json
 ``` 
 
 
