@@ -22,10 +22,15 @@ source install/setup.bash
 
 ## Docker Run
 
-Easiest way to run the project is to use docker-compose with the GitHub token.
+Easiest way to run the project is to use docker-compose.
 
 ```bash
-GITHUB_TOKEN=ghp_YOUR_GH_TOKEN docker-compose up --build
+docker-compose up --build
 ```
 
-Without the GitHub token: TODO
+Permission denied for docker hub -> create image locally:
+``` bash
+cd src/wisevision_msgs
+docker build -t wisevision/ros_with_wisevision_msgs:humble -f Dockerfile .
+cd ../..
+docker-compose up --build
