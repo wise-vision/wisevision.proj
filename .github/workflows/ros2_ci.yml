@@ -8,7 +8,8 @@ on:
       - 'stabilization/**'
       - 'testing/**'
   schedule:
-    - cron: '0 22 * * *'
+    - cron: '0 3 * * *' 
+
 
 jobs:
   build:
@@ -44,7 +45,7 @@ jobs:
         mkdir -p ~/.ssh
         echo "${{ secrets.SSH_KEY }}" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
-        ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
+        ssh-keyscan github.com >> ~/.ssh/known_hosts
 
     - name: Import repositories using vcs
       run: |
@@ -55,13 +56,14 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y python3-rosdep libyaml-cpp-dev
+        sudo /bin/bash -c wisevision_ws/wisevision.proj/install_depends.sh
         if [ ! -f /etc/ros/rosdep/sources.list.d/20-default.list ]; then
           sudo rosdep init
         fi
         sudo rosdep fix-permissions
         rosdep update --include-eol-distros --rosdistro=humble
-        cd automatic_action_execution_ws
-        rosdep install --from-path src -i -y --rosdistro humble
+        cd wisevision_ws/wisevision.proj
+        rosdep install --from-path src -i -y --rosdistro humble  --skip-keys="Boost PahoMqtt"
 
     - name: Build test
       run: |

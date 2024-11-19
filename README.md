@@ -34,3 +34,12 @@ cd src/wisevision_msgs
 docker build -t wisevision/ros_with_wisevision_msgs:humble -f Dockerfile .
 cd ../..
 docker-compose up --build
+```
+
+## Run workflow with act
+
+Act tool [link](https://github.com/nektos/act).
+
+```bash
+act pull_request -W .github/workflows/ros2_ci.yml -j build -P ubuntu-22.04=catthehacker/ubuntu:act-22.04 --secret SSH_KEY="$(cat path/to/your/private_key)"
+```

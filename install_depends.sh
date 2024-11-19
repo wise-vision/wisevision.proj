@@ -1,20 +1,17 @@
 #!/bin/bash
 
-# Install libpaho-mqtt-dev non-interactively
 export DEBIAN_FRONTEND=noninteractive
+
+
 sudo apt-get update
-sudo apt-get install -y libpaho-mqtt-dev  libpaho-mqttpp-dev
+# general
+sudo apt-get install -y python3-pip
 # ros2_automatic_action_execution
-sudo apt-get install libyaml-cpp-dev
+sudo apt-get -y install libyaml-cpp-dev
 # ros2_lora_bridge
-sudo apt install protobuf-compiler
+sudo apt-get install -y libpaho-mqtt-dev  libpaho-mqttpp-dev
+sudo apt install  -y protobuf-compiler libboost-all-dev
 # dash-board
-sudo apt install nodejs npm
-sudo apt update
-sudo apt install docker.io
-sudo systemctl start docker
-sudo systemctl enable docker
-sudo apt install docker-compose
-npm install
-npm install react-router-dom
+sudo apt install -y nodejs npm docker.io docker-compose
+npm install -y react-router-dom
 pip install flask
