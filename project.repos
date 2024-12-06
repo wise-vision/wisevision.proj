@@ -11,7 +11,7 @@ repositories:
   src/wisevision-dashboard:
     type: git
     url: git@github.com:wise-vision/wisevision-dashboard.git
-    version: flask
+    version: stabilization/2411
   src/ros2_black_box:
     type: git
     url: git@github.com:wise-vision/ros2_black_box.git
