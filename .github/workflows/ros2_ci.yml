@@ -60,10 +60,33 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y python3-rosdep libyaml-cpp-dev
+        apt-get install -y wget build-essential gcc make cmake libssl-dev autoconf libtool pkg-config 
+        apt-get install -y libpaho-mqtt-dev  libpaho-mqttpp-dev 
+        apt-get install -y libboost-all-dev 
         sudo /bin/bash -c wisevision_ws/wisevision.proj/install_depends.sh
         if [ ! -f /etc/ros/rosdep/sources.list.d/20-default.list ]; then
           sudo rosdep init
         fi
+        export GRPC_INSTALL_DIR=$HOME/grpc_install_dir 
+        mkdir -p $GRPC_INSTALL_DIR 
+        git clone --recurse-submodules -b v1.64.0 --depth 1 --shallow-submodules https://github.com/grpc/grpc $HOME/grpc 
+        cd $HOME/grpc 
+        mkdir -p cmake/build 
+        cd cmake/build 
+        cmake -DCMAKE_INSTALL_PREFIX=$GRPC_INSTALL_DIR \
+              -DBUILD_SHARED_LIBS=ON \
+              -DgRPC_BUILD_GRPC_CPP_PLUGIN=ON \
+              -DgRPC_BUILD_GRPC_CSHARP_PLUGIN=OFF \
+              -DgRPC_BUILD_GRPC_NODE_PLUGIN=OFF \
+              -DgRPC_BUILD_GRPC_OBJECTIVE_C_PLUGIN=OFF \
+              -DgRPC_BUILD_GRPC_PHP_PLUGIN=OFF \
+              -DgRPC_BUILD_GRPC_PYTHON_PLUGIN=OFF \
+              -DgRPC_BUILD_PROTOBUF=ON \
+              -DgRPC_BUILD_GRPC_RUBY_PLUGIN=OFF \
+              ../.. 
+        make -j 4 
+        make install 
+        cd -
         sudo rosdep fix-permissions
         rosdep update --include-eol-distros --rosdistro=humble
         cd wisevision_ws/wisevision.proj
@@ -71,6 +94,9 @@ jobs:
 
     - name: Build test
       run: |
+        export GRPC_INSTALL_DIR=$HOME/grpc_install_dir
+        export PATH=$GRPC_INSTALL_DIR/bin:$PATH
+        export LD_LIBRARY_PATH=$GRPC_INSTALL_DIR/lib:$LD_LIBRARY_PATH
         . /opt/ros/humble/setup.sh
         colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release
 
