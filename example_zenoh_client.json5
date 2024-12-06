@@ -1,0 +1,13 @@
+{
+  "mode": "client",
+  "plugins": {
+    "ros2dds": {
+      "ros_localhost_only": false
+    }
+  },
+  "connect": {
+    "endpoints": [
+      "tcp/public_server_addres:7447"
+    ]
+  }
+}

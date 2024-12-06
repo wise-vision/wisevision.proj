@@ -8,3 +8,8 @@ src/**
 zenoh_router.json5
 zenoh_client.json5
 config.json
+.env
+config.yaml
+config_combined.yaml
+serviceAccount.json
+config_email.yaml

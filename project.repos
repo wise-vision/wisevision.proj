@@ -8,7 +8,7 @@ repositories:
     type: git
     url: git@github.com:wise-vision/ros2_lora_bridge.git
     version: stabilization/2411
-  src/wisevision-dashboard:
+  src/wisevision_dashboard:
     type: git
     url: git@github.com:wise-vision/wisevision-dashboard.git
     version: stabilization/2411

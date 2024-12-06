@@ -18,10 +18,7 @@
             "id": "influxdb",
             "db": "zenoh_example_1",
             "create_db": true,
-            "on_closure": "do_nothing",
-            "private": {
-              "encoding": "base64"
-            }
+            "on_closure": "do_nothing"
           }
         },
         "devices": {

@@ -89,7 +89,7 @@ jobs:
         cd -
         sudo rosdep fix-permissions
         rosdep update --include-eol-distros --rosdistro=humble
-        cd wisevision_ws/wisevision.proj
+        cd $GITHUB_WORKSPACE/wisevision_ws/wisevision.proj
         rosdep install --from-path src -i -y --rosdistro humble  --skip-keys="Boost PahoMqtt"
 
     - name: Build test

@@ -26,6 +26,7 @@ services:
     volumes:
       - ./zenoh_router.json5:/root/.zenoh/zenoh_router.json5
     command: ["-c", "/root/.zenoh/zenoh_router.json5"]
+
   ros2_automatic_action_execution:
     extends:
       file: ./src/ros2_automatic_action_execution/docker-compose.yml
@@ -38,12 +39,12 @@ services:
 
   wisevision-dashboard-backend:
     extends:
-      file: ./src/wisevision-dashboard/docker-compose.yml
+      file: ./src/wisevision_dashboard/docker-compose.yml
       service: backend
       
   wisevision-frontend:
     extends:
-      file: ./src/wisevision-dashboard/docker-compose.yml
+      file: ./src/wisevision_dashboard/docker-compose.yml
       service: client
 
   wisevision_lorawan_bridge:
