@@ -1,0 +1,107 @@
+name: Build and run ROS2 tests
+
+on:
+  pull_request:
+    branches:
+      - dev
+      - main
+      - 'stabilization/**'
+      - 'testing/**'
+  schedule:
+    - cron: '0 3 * * *' 
+
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-22.04, ubuntu-24.04]
+
+    runs-on: ${{ matrix.os }}
+
+    continue-on-error: true
+
+    container:
+      image: ros:humble-ros-base
+
+    steps:
+    - name: Install SSH
+      run: |
+        apt-get update
+        apt-get install -y openssh-client
+
+    - uses: webfactory/ssh-agent@v0.7.0
+      with:
+        ssh-private-key: ${{ secrets.SSH_KEY }}
+
+    - name: Create workspace directory
+      run: |
+        mkdir -p wisevision_ws
+  
+    - name: Checkout code
+      uses: actions/checkout@v3
+      with:
+        ssh-key: ${{ secrets.SSH_KEY }}
+        path: wisevision_ws/wisevision.proj     
+
+    - name: Set up SSH for Git authentication
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.SSH_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan github.com >> ~/.ssh/known_hosts
+
+    - name: Import repositories using vcs
+      run: |
+        cd wisevision_ws/wisevision.proj
+        vcs import --recursive < project.repos
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y python3-rosdep libyaml-cpp-dev
+        apt-get install -y wget build-essential gcc make cmake libssl-dev autoconf libtool pkg-config 
+        apt-get install -y libpaho-mqtt-dev  libpaho-mqttpp-dev 
+        apt-get install -y libboost-all-dev 
+        sudo /bin/bash -c wisevision_ws/wisevision.proj/install_depends.sh
+        if [ ! -f /etc/ros/rosdep/sources.list.d/20-default.list ]; then
+          sudo rosdep init
+        fi
+        export GRPC_INSTALL_DIR=$HOME/grpc_install_dir 
+        mkdir -p $GRPC_INSTALL_DIR 
+        git clone --recurse-submodules -b v1.64.0 --depth 1 --shallow-submodules https://github.com/grpc/grpc $HOME/grpc 
+        cd $HOME/grpc 
+        mkdir -p cmake/build 
+        cd cmake/build 
+        cmake -DCMAKE_INSTALL_PREFIX=$GRPC_INSTALL_DIR \
+              -DBUILD_SHARED_LIBS=ON \
+              -DgRPC_BUILD_GRPC_CPP_PLUGIN=ON \
+              -DgRPC_BUILD_GRPC_CSHARP_PLUGIN=OFF \
+              -DgRPC_BUILD_GRPC_NODE_PLUGIN=OFF \
+              -DgRPC_BUILD_GRPC_OBJECTIVE_C_PLUGIN=OFF \
+              -DgRPC_BUILD_GRPC_PHP_PLUGIN=OFF \
+              -DgRPC_BUILD_GRPC_PYTHON_PLUGIN=OFF \
+              -DgRPC_BUILD_PROTOBUF=ON \
+              -DgRPC_BUILD_GRPC_RUBY_PLUGIN=OFF \
+              ../.. 
+        make -j 4 
+        make install 
+        cd -
+        sudo rosdep fix-permissions
+        rosdep update --include-eol-distros --rosdistro=humble
+        cd $GITHUB_WORKSPACE/wisevision_ws/wisevision.proj
+        rosdep install --from-path src -i -y --rosdistro humble  --skip-keys="Boost PahoMqtt"
+
+    - name: Build test
+      run: |
+        export GRPC_INSTALL_DIR=$HOME/grpc_install_dir
+        export PATH=$GRPC_INSTALL_DIR/bin:$PATH
+        export LD_LIBRARY_PATH=$GRPC_INSTALL_DIR/lib:$LD_LIBRARY_PATH
+        . /opt/ros/humble/setup.sh
+        colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release
+
+    - name: Test result summary
+      run: |
+        . /opt/ros/humble/setup.sh
+        colcon test
+        colcon test-result --verbose

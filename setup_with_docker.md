@@ -18,7 +18,7 @@ Before run docker create file `DEFAULT_CONFIG.json5`, with:
   },
   "listen": {
     "endpoints": [
-      "<proto>/<ip>:<port>" "
+      "<proto>/<ip>:<port>"
     ]
   }
 }
