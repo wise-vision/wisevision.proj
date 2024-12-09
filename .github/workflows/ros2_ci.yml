@@ -29,6 +29,11 @@ jobs:
       run: |
         apt-get update
         apt-get install -y openssh-client
+        
+    - name: Install Node.js
+      run: |
+        apt-get update
+        apt-get install -y nodejs npm
 
     - uses: webfactory/ssh-agent@v0.7.0
       with:
@@ -103,5 +108,5 @@ jobs:
     - name: Test result summary
       run: |
         . /opt/ros/humble/setup.sh
-        colcon test
+        colcon test --executor sequential
         colcon test-result --verbose
