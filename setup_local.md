@@ -24,16 +24,10 @@ sudo chown -R <user_name>:<user_name> /var/lib/influxdb
 ### 2. [Zenoh local install and run](docs/install_zenoh.md)
 Click the link to learn how to install and run Zenoh. Run Zenoh before starting any application.
 
-### 3. Download and Install ChirpStack
-1. Clone the repository:
-```bash
-git clone https://github.com/chirpstack/chirpstack-docker.git
-cd chirpstack-docker
-```
-2. Run `chirpstack`:
-``` bash
-docker-compose up
-```
+### 3. [Download, Install and Set Up ChirpStack with Gateway](docs/set_up_chirpstack.md)
+
+Click the link to learn how to install and run Chirpstack with gateway. Run Chirpstack before starting any application.
+
 ## Local Build
 
 1. Download repositories:
@@ -81,19 +75,15 @@ ros2 run black_box black_box
 #### Configure and Run ros2_lora_bridge
 1. Start chirpstack in another terminal and open http://localhost:8080. Log in with admin/admin.
 2. Set environment variables:
- - On chirpstack ui after login on the left bar go to `API keys` and than creat API key by click on the `Add API key`, provide name for API key -> genearte `API key` -> copy `API key` -> paste into `my_new_token` in command bellow and run this command
+ - [Create API Key](docs/set_up_chirpstack.md#how-to-create-api-key) and paste into `my_new_token` in command bellow and run this command:
     ```
     export API_TOKEN=<my_new_token>
     ```
- - On chirpstack ui add aplication: 
-    - On the left bar clic on `Application`
-    - In the right corner click on `Add aplication`
-    - Provide name of the application
-    - On the top of the UI copy `aplication id` paste into `my_new_application_id` in command bellow and run this command
+ - On chirpstack ui [add aplication](docs/set_up_chirpstack.md#how-to-create-application).
+  - [Copy `aplication id`](docs/set_up_chirpstack.md#how-to-get-application-id) and paste into `my_new_application_id` in command bellow and run this command:
     ```
     export APPLICATION_ID=<my_new_application_id>
     ```
-- Start the gateway in another terminal: https://github.com/Lora-net/sx1302_hal
 3. Run:
 ```bash
 source install/setup.bash

@@ -1,46 +1,51 @@
 # How to set up chirpstack
 ## Run chirpstack in docker
+
+### Clone the repository:
 1. Clone the repository:
 ```bash
 git clone https://github.com/chirpstack/chirpstack-docker.git
 cd chirpstack-docker
 ```
-2. Run `chirpstack`:
+### Before start make changes in chirpstack-docker
+1. In file `~/chirpstack-docker/configuration/chirpstack/chirpstack.toml` change last line `json=true` into `json=false`.
+2. In file `~/chirpstack-docker/configuration/chirpstack/<your_region>.toml` change line with:
+``` toml
+# RX2 data-rate
+rx2_dr=0
+```
+into:
+``` toml
+# RX2 data-rate
+rx2_dr=3
+```
+For sending bigger payload for class C device
+### Run `chirpstack`:
+1. Run:
 ``` bash
+cd chirpstack-docker
 docker-compose up
 ```
-## Configure chirpstack for ros2_lora_bridge
-1. Start chirpstack in another terminal and open http://localhost:8080. Log in with admin/admin.
-2. Set environment variables:
- - On chirpstack ui after login on the left bar go to `API keys` and than creat API key by click on the `Add API key`, provide name for API key -> genearte `API key` -> copy `API key` -> paste into `my_new_token` in command bellow and run this command
-    ```
-    export API_TOKEN=<my_new_token>
-    ```
- - On chirpstack ui add aplication: 
-    - On the left bar clic on `Application`
-    - In the right corner click on `Add aplication`
-    - Provide name of the application
-    - On the top of the UI copy `aplication id` paste into `my_new_application_id` in command bellow and run this command
-    ```
-    export APPLICATION_ID=<my_new_application_id>
-    ```
-
 
 ## How to add gateway
-1. Start the gateway in another terminal: https://github.com/Lora-net/sx1302_hal
-2. Start chirpstack in another terminal and open http://localhost:8080. Log in with admin/admin.
+1. Start the gateway in another terminal (if it's already set up, if not [set up gateway](set_up_gateway.md)):
+``` bash
+cd sx1302_hal-2.0.1/packet_forwarder
+sudo ./lora_pkt_fwd
+```
+2. Open http://localhost:8080. Log in with admin/admin.
 3. On the left bar click on `gateways`. (`1.` on the image below)
 4. Click on the `Add gateway`. (`2.` on the image below)
 
 <img src="assets/add_gateway_start.png" alt="Add gateway start" width="900" />
 
 5. Write name for gateway. (`1`. on the image below)
-6. Write gateway EUI [How to get gateway EUI](link) (`2.` on the image below)
+6. Write gateway ID (EUI) [How to get gateway ID](set_up_gateway.md#generate-gateway-id) (`2.` on the image below)
 7. Save gateway by click `Submit` (`3.` on the image below)
 
 <img src="assets/add_gateway_data.png" alt="Add gateway data" width="900" />
 
-## How to creat application
+## How to create application
 1. On the left bar click on `Aplications`. (`1.` on the image below)
 2. Click on the `Add gateway`. (`2.` on the image below)
 
@@ -71,11 +76,11 @@ docker-compose up
 1. On the left bar click on `Applications`. (`1.` on the image below)
 2. Choose the application to add the device to. (`2.` on the image below)
 
-<img src="assets/add_device_start.png" alt="Add device profile class C" width="900" />
+<img src="assets/add_device_start.png" alt="Add device start" width="900" />
 
 3. Click on the `Add device`. (`1.` on the image below)
 
-<img src="assets/add_device_application.png" alt="Add device profile class C" width="900" />
+<img src="assets/add_device_application.png" alt="Add device application" width="900" />
 
 4. Write name for device. (`1.` on the image below)
 5. Write device `EUI`. (`2.` on the image below)
@@ -83,4 +88,32 @@ docker-compose up
 7. Choose correct device profile. (`4.` on the image below)
 8. Save device by click `Submit` (`5.` on the image below)
 
-<img src="assets/add_device_data.png" alt="Add device profile class C" width="900" />
+<img src="assets/add_device_data.png" alt="Add device data" width="900" />
+
+## How to get Application id
+
+1. On the left bar click on `Applications`. (`1.` on the image below)
+2. Choose the application to get the `application ID` from. (`2.` on the image below)
+
+<img src="assets/application_id_start.png" alt="Application id start" width="900" />
+
+3. Application id is next to app name. (`1.` on the image below)
+
+<img src="assets/application_id_data.png" alt="Application id data" width="900" />
+
+## How to create API key
+
+1. On the left bar click on `API keys`. (`1.` on the image below)
+2. Click on the `Add API key`. (`2.` on the image below)
+
+<img src="assets/add_api_key_start.png" alt="API key start" width="900" />
+
+3. Wrtie name of the `API keys`. (`1.` on the image below)
+4. Click on the `Submit`. (`2.` on the image below)
+
+<img src="assets/add_api_key_data.png" alt="API key data" width="900" />
+
+5. `API key` is here (`1.` on the image below)
+6. Click on the `Submit`. (`2.` on the image below)
+
+<img src="assets/add_api_key_copy.png" alt="API key copy" width="900" />

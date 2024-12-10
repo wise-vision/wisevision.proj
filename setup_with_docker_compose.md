@@ -1,11 +1,11 @@
 # How to run docker compose?
 ## Before run
-Clone repos:
+- Clone repos:
 ``` bash
 git clone git@github.com:wise-vision/wisevision.proj.git && cd wisevision.proj
 vcs import --recursive < project.repos
 ```
-
+- [Download, Install and Set Up ChirpStack with Gateway](docs/set_up_chirpstack.md)
 ### Configurations
 
 #### Config Zenoh 
@@ -27,36 +27,20 @@ Copy `exmaple_config.json` into `ros2_black_box` directory
 cp config_example.json src/ros2_black_box/config.json
 ```
 #### Config ros2_lora_bridge
-Before run `ros2_lora_bridge` run in another terminal `chirpstack`
-1. Clone repo:
-```bash
-git clone https://github.com/chirpstack/chirpstack-docker.git
-cd chirpstack-docker
-```
-2. Run `chirpstack`
-``` bash
-docker-compose up
-```
-3. After start chirpstack go to http://localhost:8080 and login with admin/admin
-4. Create `.env` file for enviroment variables
+1. Create `.env` file for enviroment variables
 ``` bash
 cd ~/wisevision.proj
 cp src/ros2_lora_bridge/.env_example src/ros2_lora_bridge/.env
 ```
- - On chirpstack ui after login on the left bar go to `API keys` and than creat API key by click on the `Add API key`, provide name for API key -> genearte `API key` -> copy `API key` -> paste into `my_new_token` in command bellow and run this command
+ - [Create API Key](docs/set_up_chirpstack.md#how-to-create-api-key) and paste into `my_new_token` in command bellow and run this command:
 ```
  sed -i 's/^API_TOKEN=.*/API_TOKEN=my_new_token/' /src/ros2_lora_bridge/.env
  ```
- - On chirpstack ui add aplication: 
-    - On the left bar clic on `Application`
-    - In the right corner click on `Add aplication`
-    - Provide name of the application
-    - On the top of the UI copy `aplication id` paste into `my_new_token` in command bellow and run this command
-    ```
-    sed -i 's/^APPLICATION_ID=.*/APPLICATION_ID=my_new_application_id/' /src/ros2_lora_bridge/.env
-    ```
-Before run ros2_lora_bridge start gateway in another terminal: https://github.com/Lora-net/sx1302_hal
-
+ - On chirpstack ui [add aplication](docs/set_up_chirpstack.md#how-to-create-application).
+   - [Copy `aplication id`](docs/set_up_chirpstack.md#how-to-get-application-id) and paste into `my_new_application_id` in command bellow and run this command:
+  ```
+  sed -i 's/^APPLICATION_ID=.*/APPLICATION_ID=my_new_application_id/' /src/ros2_lora_bridge/.env
+  ```
 #### Config wisevision_notificator_manager
 1. Creat config files
 - Config for email
