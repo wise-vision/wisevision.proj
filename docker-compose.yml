@@ -1,0 +1,70 @@
+version: '3.8'
+
+services:
+  influxdb:
+    image: influxdb:1.8  
+    ports:
+      - "8086:8086"  
+    volumes:
+      - influxdb_data:/var/lib/influxdb
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8086/health"]
+      interval: 10s
+      retries: 5
+      start_period: 5s
+      timeout: 5s
+
+  zenoh_router:
+    build:
+      context: ./docker-files/zenoh-influxdb-docker
+      dockerfile: Dockerfile
+    depends_on:
+      influxdb:
+        condition: service_healthy
+    init: true
+    network_mode: host
+    volumes:
+      - ./zenoh_router.json5:/root/.zenoh/zenoh_router.json5
+    command: ["-c", "/root/.zenoh/zenoh_router.json5"]
+
+  ros2_automatic_action_execution:
+    extends:
+      file: ./src/ros2_automatic_action_execution/docker-compose.yml
+      service: ros2_automatic_action_execution 
+      
+  ros2_black_box:
+    extends:
+      file: ./src/ros2_black_box/docker-compose.yml
+      service: ros2_black_box
+
+  wisevision-dashboard-backend:
+    extends:
+      file: ./src/wisevision_dashboard/docker-compose.yml
+      service: backend
+      
+  wisevision-frontend:
+    extends:
+      file: ./src/wisevision_dashboard/docker-compose.yml
+      service: client
+
+  wisevision_lorawan_bridge:
+    extends:
+      file: ./src/ros2_lora_bridge/docker-compose.yml
+      service: ros2_lora_bridge
+
+  wisevision_gps_tools:
+    extends:
+      file: ./src/wisevision_gps_tools/docker-compose.yml
+      service: wisevision_gps_tools
+
+  wisevision_notificator_manager:
+    extends:
+      file: ./src/ros2_notifications/docker-compose.yml
+      service: ros2_notifcations
+    build:
+      args:
+        USE_EMAIL_NOTIFIER: "true"
+        USE_FIREBASE_NOTIFIER: "false"
+
+volumes:
+  influxdb_data:
