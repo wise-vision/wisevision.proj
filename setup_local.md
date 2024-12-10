@@ -1,9 +1,9 @@
-# How to set up local?
+# How to Set Up Local Environment
 ## Prequistances
 
-## Install and run dependencies
-### 1. Influxdb install and run
-- Install:
+## Install and Run Dependencies
+### 1. Install and Run InfluxDB
+- **Install**:
 ``` bash
 wget -qO- https://repos.influxdata.com/influxdb.key | sudo apt-key add -
 echo "deb https://repos.influxdata.com/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/influxdb.list
@@ -12,41 +12,35 @@ sudo apt install influxdb=1.8.*
 sudo systemctl start influxdb
 sudo systemctl enable influxdb
 ```
-- Run:
+- **Run**:
 ``` bash
 influxd
 ```
-- Problem with permissions:
+- **Fix Permission Issues**:
 ``` bash
 sudo chown -R <user_name>:<user_name> /var/lib/influxdb
 ```
 
 ### 2. [Zenoh local install and run](docs/install_zenoh.md)
-Clicl on this to see how to intsall and run zenoh. Run before start any app.
+Click the link to learn how to install and run Zenoh. Run Zenoh before starting any application.
 
-### 3. Download and intsall chirsptack
-1. Clone repo:
-```bash
-git clone https://github.com/chirpstack/chirpstack-docker.git
-cd chirpstack-docker
-```
-2. Run `chirpstack`
-``` bash
-docker-compose up
-```
-## Locacl Build
+### 3. [Download, Install and Set Up ChirpStack with Gateway](docs/set_up_chirpstack.md)
 
-1. Download repositories
+Click the link to learn how to install and run Chirpstack with gateway. Run Chirpstack before starting any application.
+
+## Local Build
+
+1. Download repositories:
 ```bash
 git clone git@github.com:wise-vision/wisevision.proj.git && cd wisevision.proj
 vcs import --recursive < project.repos
 ```
-2. Instal dependencies
+2. Install dependencies:
 ```bash
 cd wisevision.proj
 ./install_depends.sh
 ```
-3. Build
+3. Build:
 
 Export variables to be able to load built shared libraries and include headers. It is recommended to put those variables inside .bashrc file.
 ```bash
@@ -58,67 +52,60 @@ Build:
 ```bash
 colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release
 ```
-## Set up config files and run
-### Config wisevision_data_black_box and run
+## Set Up Config Files and Run
+### Configure and Run wisevision_data_black_box
 
-The black box requires a configuration file and to be named `config.json`. 
+The black box requires a `config.json` file. The only required field is `zenoh_url`, which should point to the Zenoh server’s URL.
 
-The only required field is `zenoh_url` which should be the url of the zenoh server.  The example file is provided as `example_config.json5` by default can be copied into.
-
-1. Copy `exmaple_config.json` into `ros2_black_box` directory.
+1. Copy `exmaple_config.json` in `.proj` directory:
 ``` bash
 cp config_example.json config.json
 ```
-2. Before run set environment variables.
+2. Set environment variables:
 ```bash
 export DB_ADDRESS=localhost
 export DB_PORT=8086
 ```
-3. Run.
+3. Run:
 ```bash
 source install/setup.bash
 ros2 run black_box black_box
 ```
 
-#### Config ros2_lora_bridge and run
-Before run `ros2_lora_bridge` run in another terminal `chirpstack`
-1. After start chirpstack go to http://localhost:8080 and login with admin/admin.
-2. Before run set environment variables.
- - On chirpstack ui after login on the left bar go to `API keys` and than creat API key by click on the `Add API key`, provide name for API key -> genearte `API key` -> copy `API key` -> paste into `my_new_token` in command bellow and run this command
+#### Configure and Run ros2_lora_bridge
+1. Start chirpstack in another terminal and open http://localhost:8080. Log in with admin/admin.
+2. Set environment variables:
+ - [Create API Key](docs/set_up_chirpstack.md#how-to-create-api-key) and paste into `my_new_token` in command bellow and run this command:
     ```
     export API_TOKEN=<my_new_token>
     ```
- - On chirpstack ui add aplication: 
-    - On the left bar clic on `Application`
-    - In the right corner click on `Add aplication`
-    - Provide name of the application
-    - On the top of the UI copy `aplication id` paste into `my_new_application_id` in command bellow and run this command
+ - On chirpstack ui [add aplication](docs/set_up_chirpstack.md#how-to-create-application).
+  - [Copy `aplication id`](docs/set_up_chirpstack.md#how-to-get-application-id) and paste into `my_new_application_id` in command bellow and run this command:
     ```
     export APPLICATION_ID=<my_new_application_id>
     ```
-- Before run ros2_lora_bridge start gateway in another terminal: https://github.com/Lora-net/sx1302_hal
 3. Run:
 ```bash
 source install/setup.bash
 ros2 run ros2_lora_bridge ros2_lora_bridge --ros-args  --param application_id:=$APPLICATION_ID
 ```
 
-### ros2_automatic_action_execution run
+### Run ros2_automatic_action_execution
 1. Run:
 ```bash
 source install/setup.bash
 ros2 run automatic_action_execution automatic_action_service
 ```
 
-###  wisevision_gps_tools run
+###  Run wisevision_gps_tools
 1. Run:
 ```bash
 source intsall/setup.bash
 ros2 run wisevision_gps_tools gps_device_manager_node
 ```
 
-###  wisevision_notification_manager run
-**Push notifications**
+###  Run wisevision_notification_manager
+**Push Notifications**
 * In `notifications_ws`  or for docker in `~/notifications_ws/src/ros2_notifcations` create `deviceTokens.json`
 ```bash
 cd ~/notifications_ws
@@ -134,13 +121,13 @@ In this file add [device token from app](https://github.com/wise-vision/notifica
 ```
 * Download file from firebase console with service account password `serviceAccount.json` and copy it to `wisevision.proj`
     * Go to firebase console
-    * Go to project setting by click on gear icon
+    * Go to project settings by click on gear icon
     * In settings go to Service accounts
     * In service accounts choose `Java` in admin SDK configuration and click on `Generate new private key`
     * Copy this file to `wisevision.proj`
 
 
-**Email**
+**Email Notifications**
 
 Before start create in  `wisevision.proj`  file `config_email.yaml` with:
 ```yaml
