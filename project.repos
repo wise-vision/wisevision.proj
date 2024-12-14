@@ -3,28 +3,28 @@ repositories:
   src/ros2_automatic_action_execution:
     type: git
     url: git@github.com:wise-vision/ros2_automatic_action_execution.git
-    version: main
+    version: 2411
   src/ros2_lora_bridge:
     type: git
     url: git@github.com:wise-vision/ros2_lora_bridge.git
-    version: main
+    version: 2411
   src/wisevision_dashboard:
     type: git
     url: git@github.com:wise-vision/wisevision-dashboard.git
-    version: main
+    version: 2411
   src/ros2_black_box:
     type: git
     url: git@github.com:wise-vision/ros2_black_box.git
-    version: main
+    version: 2411
   src/wisevision_gps_tools:
     type: git
     url: git@github.com:wise-vision/wisevision_gps_tools.git
-    version: main
+    version: 2411
   src/wisevision_msgs:
     type: git
     url: git@github.com:wise-vision/wisevision_msgs.git
-    version: main
+    version: 2411
   src/ros2_notifications:
     type: git
     url: git@github.com:wise-vision/ros2_notifications.git
-    version: main
+    version: 2411
