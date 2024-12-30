@@ -69,7 +69,7 @@ export DB_PORT=8086
 3. Run:
 ```bash
 source install/setup.bash
-ros2 run black_box black_box
+ros2 run wisevision_data_black_box black_box
 ```
 
 #### Configure and Run ros2_lora_bridge
@@ -90,11 +90,11 @@ source install/setup.bash
 ros2 run ros2_lora_bridge ros2_lora_bridge --ros-args  --param application_id:=$APPLICATION_ID
 ```
 
-### Run ros2_automatic_action_execution
+### Run wisevision_action_executor
 1. Run:
 ```bash
 source install/setup.bash
-ros2 run automatic_action_execution automatic_action_service
+ros2 run wisevision_action_executor automatic_action_service
 ```
 
 ###  Run wisevision_gps_tools
@@ -105,50 +105,16 @@ ros2 run wisevision_gps_tools gps_device_manager_node
 ```
 
 ###  Run wisevision_notification_manager
-**Push Notifications**
-* In `notifications_ws`  or for docker in `~/notifications_ws/src/ros2_notifcations` create `deviceTokens.json`
-```bash
-cd ~/notifications_ws
-mkdir deviceTokens.json
-```
-In this file add [device token from app](https://github.com/wise-vision/notificator_app/blob/c_k/dev_android_app/README.md#L20) in this way:
-```json
-{
- "devices": [
-    {"token": "your-device-token-from-app"}
-  ]
-}
-```
-* Download file from firebase console with service account password `serviceAccount.json` and copy it to `wisevision.proj`
-    * Go to firebase console
-    * Go to project settings by click on gear icon
-    * In settings go to Service accounts
-    * In service accounts choose `Java` in admin SDK configuration and click on `Generate new private key`
-    * Copy this file to `wisevision.proj`
 
-
-**Email Notifications**
-
-Before start create in  `wisevision.proj`  file `config_email.yaml` with:
-```yaml
-smtp_server: "smtp://stmp_server"
-username: "sender_email"
-password: "app_passowrd"
-recipients:
-  - "recipient_email_1"
-  - "recipient_email_2"
-```
-**Hints**
-- To use mail as smtp server go to security settings in mail and create app password
 1. Run (set use_email_notifier:=t[rue or false]-p use_firebase_notifier:=[true or false]):
 ```bash
 source intsall/setup.bash
-ros2 run notifications notifications_handler --ros-args -p use_email_notifier:=true-p use_firebase_notifier:=false
+ros2 run wisevision_notification_manager notifications_handler --ros-args -p use_email_notifier:=true-p use_firebase_notifier:=false
 ```
 
 ### wisevision_dashboard 
 
-1. Install requuirments and run server.
+1. Install requirments and run server.
 ```bash
 source intsall/setup.bash
 cd src/wisevision_dashboard/app/server
@@ -156,7 +122,7 @@ pip3 install --no-cache-dir -r requirements.txt
 cd ../..
 python3 -m app.server.run
 ```
-2. Install dependencies an run frontend.
+2. Install dependencies and run frontend.
 ```bash
 cd src/wisevision_dashboard/app/client
 npm install
