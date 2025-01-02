@@ -68,11 +68,11 @@ jobs:
         apt-get install -y wget build-essential gcc make cmake libssl-dev autoconf libtool pkg-config 
         apt-get install -y libpaho-mqtt-dev  libpaho-mqttpp-dev 
         apt-get install -y libboost-all-dev 
+        export GRPC_INSTALL_DIR=$HOME/grpc_install_dir 
         sudo /bin/bash -c wisevision_ws/wisevision.proj/install_depends.sh
         if [ ! -f /etc/ros/rosdep/sources.list.d/20-default.list ]; then
           sudo rosdep init
         fi
-        export GRPC_INSTALL_DIR=$HOME/grpc_install_dir 
         sudo rosdep fix-permissions
         rosdep update --include-eol-distros --rosdistro=humble
         cd $GITHUB_WORKSPACE/wisevision_ws/wisevision.proj
