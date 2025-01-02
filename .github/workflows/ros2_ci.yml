@@ -73,25 +73,6 @@ jobs:
           sudo rosdep init
         fi
         export GRPC_INSTALL_DIR=$HOME/grpc_install_dir 
-        mkdir -p $GRPC_INSTALL_DIR 
-        git clone --recurse-submodules -b v1.64.0 --depth 1 --shallow-submodules https://github.com/grpc/grpc $HOME/grpc 
-        cd $HOME/grpc 
-        mkdir -p cmake/build 
-        cd cmake/build 
-        cmake -DCMAKE_INSTALL_PREFIX=$GRPC_INSTALL_DIR \
-              -DBUILD_SHARED_LIBS=ON \
-              -DgRPC_BUILD_GRPC_CPP_PLUGIN=ON \
-              -DgRPC_BUILD_GRPC_CSHARP_PLUGIN=OFF \
-              -DgRPC_BUILD_GRPC_NODE_PLUGIN=OFF \
-              -DgRPC_BUILD_GRPC_OBJECTIVE_C_PLUGIN=OFF \
-              -DgRPC_BUILD_GRPC_PHP_PLUGIN=OFF \
-              -DgRPC_BUILD_GRPC_PYTHON_PLUGIN=OFF \
-              -DgRPC_BUILD_PROTOBUF=ON \
-              -DgRPC_BUILD_GRPC_RUBY_PLUGIN=OFF \
-              ../.. 
-        make -j 4 
-        make install 
-        cd -
         sudo rosdep fix-permissions
         rosdep update --include-eol-distros --rosdistro=humble
         cd $GITHUB_WORKSPACE/wisevision_ws/wisevision.proj
