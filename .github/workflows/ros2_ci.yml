@@ -17,7 +17,7 @@ jobs:
       matrix:
         os: [ubuntu-22.04, ubuntu-24.04]
 
-    runs-on: self-hosted
+    runs-on: ${{ matrix.os }}
 
     continue-on-error: true
 
@@ -68,21 +68,44 @@ jobs:
         apt-get install -y wget build-essential gcc make cmake libssl-dev autoconf libtool pkg-config 
         apt-get install -y libpaho-mqtt-dev  libpaho-mqttpp-dev 
         apt-get install -y libboost-all-dev 
-        export GRPC_INSTALL_DIR=$HOME/grpc_install_dir 
-        sudo /bin/bash -c wisevision_ws/wisevision.proj/install_depends.sh
+        sudo apt-get install -y python3-pip libyaml-cpp-dev libjsoncpp-dev libcurl4-openssl-dev \
+                                curl wget build-essential gcc make cmake libssl-dev autoconf \
+                                libtool pkg-config nodejs npm docker.io docker-compose
+        npm install -y react-router-dom
+        pip install flask
         if [ ! -f /etc/ros/rosdep/sources.list.d/20-default.list ]; then
           sudo rosdep init
         fi
+        export GRPC_INSTALL_DIR=$HOME/grpc_install_dir 
+        mkdir -p $GRPC_INSTALL_DIR 
+        git clone --recurse-submodules -b v1.64.0 --depth 1 --shallow-submodules https://github.com/grpc/grpc $HOME/grpc 
+        cd $HOME/grpc 
+        mkdir -p cmake/build 
+        cd cmake/build 
+        cmake -DCMAKE_INSTALL_PREFIX=$GRPC_INSTALL_DIR \
+              -DBUILD_SHARED_LIBS=ON \
+              -DgRPC_BUILD_GRPC_CPP_PLUGIN=ON \
+              -DgRPC_BUILD_GRPC_CSHARP_PLUGIN=OFF \
+              -DgRPC_BUILD_GRPC_NODE_PLUGIN=OFF \
+              -DgRPC_BUILD_GRPC_OBJECTIVE_C_PLUGIN=OFF \
+              -DgRPC_BUILD_GRPC_PHP_PLUGIN=OFF \
+              -DgRPC_BUILD_GRPC_PYTHON_PLUGIN=OFF \
+              -DgRPC_BUILD_PROTOBUF=ON \
+              -DgRPC_BUILD_GRPC_RUBY_PLUGIN=OFF \
+              ../.. 
+        make -j 4 
+        make install 
+        cd -
         sudo rosdep fix-permissions
         rosdep update --include-eol-distros --rosdistro=humble
         cd $GITHUB_WORKSPACE/wisevision_ws/wisevision.proj
-        rosdep install --from-path src -i -y --rosdistro humble
+        rosdep install --from-path src -i -y --rosdistro humble  --skip-keys="Boost PahoMqtt"
 
     - name: Build test
       run: |
-        export GRPC_INSTALL_DIR=$HOME/grpc_install_dir
-        export PATH=$GRPC_INSTALL_DIR/bin:$PATH
-        export LD_LIBRARY_PATH=$GRPC_INSTALL_DIR/lib:$LD_LIBRARY_PATH
+        export GRPC_INSTALL_DIR=${HOME}/grpc_install_dir
+        export PATH=$PATH:${GRPC_INSTALL_DIR}/bin
+        export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${GRPC_INSTALL_DIR}/lib
         . /opt/ros/humble/setup.sh
         colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release
 
