@@ -4,10 +4,14 @@ repositories:
     type: git
     url: git@github.com:wise-vision/wisevision_action_executor.git
     version: main
-  src/ros2_lora_bridge:
+  src/wisevision_core:
     type: git
-    url: git@github.com:wise-vision/ros2_lora_bridge.git
-    version: 2411
+    url: git@github.com:wise-vision/wisevision_core.git
+    version: dev
+  src/wisevision_lorawan_bridge:
+    type: git
+    url: git@github.com:wise-vision/wisevision_lorawan_bridge.git
+    version: dev
   src/wisevision_dashboard:
     type: git
     url: git@github.com:wise-vision/wisevision-dashboard.git
