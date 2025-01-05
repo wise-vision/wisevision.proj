@@ -44,9 +44,13 @@ influxd
 ### 2. [Zenoh local install and run](docs/install_zenoh.md)
 Click the link to learn how to install and run Zenoh. Run Zenoh before starting any application.
 
-### 3. [Download, Install and Set Up ChirpStack with Gateway](docs/set_up_chirpstack.md)
+### 3. [Setup gateway for LoRaWAN communication](docs/set_up_gateway.md)
+
+### 4. [Download, Install and Set Up ChirpStack with Gateway](docs/set_up_chirpstack.md)
 
 Click the link to learn how to install and run Chirpstack with gateway. Run Chirpstack before starting any application.
+
+---
 
 ## Local Build
 

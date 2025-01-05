@@ -1,15 +1,25 @@
 # How to set up chirpstack
+
+Chirpstack is an open-source LoRaWAN Network Server stack. It is responsible for handling the communication between the LoRaWAN end-devices and the application server. In the WiseVision project, it is used to manage the communication between the LoRaWAN end-devices and the WiseVision bridge.
+
 ## Run chirpstack in docker
 
 ### Clone the repository:
 1. Clone the repository:
 ```bash
-git clone https://github.com/chirpstack/chirpstack-docker.git
-cd chirpstack-docker
+vcs import --recursive < external.repos
+# or directly with git
+git clone https://github.com/chirpstack/chirpstack-docker.git external/chirpstack-docker
 ```
 ### Before start make changes in chirpstack-docker
-1. In file `~/chirpstack-docker/configuration/chirpstack/chirpstack.toml` change last line `json=true` into `json=false`.
-2. In file `~/chirpstack-docker/configuration/chirpstack/<your_region>.toml` change line with:
+1. In file `external/chirpstack-docker/configuration/chirpstack/chirpstack.toml` change last line `json=true` into `json=false`.
+
+```bash
+sed -i '/\[integration.mqtt\]/,/^$/s/json=true/json=false/' external/chirpstack-docker/configuration/chirpstack/chirpstack.toml
+```
+
+2. In file `external/chirpstack-docker/configuration/chirpstack/<your_region>.toml` For sending bigger payload for `class C` device change line with:
+
 ``` toml
 # RX2 data-rate
 rx2_dr=0
@@ -19,12 +29,20 @@ into:
 # RX2 data-rate
 rx2_dr=3
 ```
-For sending bigger payload for class C device
+
+```bash
+sed -i 's/^\([[:space:]]*\)#* *rx2_dr=0/\1rx2_dr=3/' /home/adam/wisevision.proj/external/chirpstack-docker/configuration/chirpstack/<your_region>.toml
+```
+
+For the EU region, the file is `region_eu433.toml` and `region_eu868.toml`.
+
+
 ### Run `chirpstack`:
 1. Run:
 ``` bash
-cd chirpstack-docker
-docker-compose up
+cd external/chirpstack-docker
+docker compose up 
+# or for older versions docker-compose up 
 ```
 
 ## How to add gateway

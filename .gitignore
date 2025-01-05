@@ -3,6 +3,7 @@ build/
 install/
 log/
 src/**
+external/**
 
 #configs
 zenoh_router.json5
