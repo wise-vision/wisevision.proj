@@ -2,6 +2,30 @@
 Repository containing sub-repos for setting up the whole project
 
 
+## Table of Contents
+
+- [wisevision.proj](#wisevisionproj)
+  - [Table of Contents](#table-of-contents)
+  - [Download](#download)
+    - [VCSTool](#vcstool)
+    - [Get the project](#get-the-project)
+    - [Install dependencies](#install-dependencies)
+      - [ROS2](#ros2)
+      - [MQTT C++ Client Library](#mqtt-c-client-library)
+      - [gRPC](#grpc)
+  - [Build](#build)
+  - [Docker Run](#docker-run)
+    - [Setup](#setup)
+    - [Run with docker-compose](#run-with-docker-compose)
+  - [FAQ](#faq)
+    - [Permission denied for docker hub](#permission-denied-for-docker-hub)
+  - [Run workflow with act](#run-workflow-with-act)
+
+**For detailed instructions see the**:
+- [Setup Local](setup_local.md)
+- [Setup with Docker Compose](setup_with_docker_compose.md)
+- [Set with Docker](setup_with_docker.md)
+
 ## Download 
 
 ### VCSTool
