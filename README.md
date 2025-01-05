@@ -2,6 +2,31 @@
 Repository containing sub-repos for setting up the whole project
 
 
+## Table of Contents
+
+- [wisevision.proj](#wisevisionproj)
+  - [Table of Contents](#table-of-contents)
+  - [Download](#download)
+    - [VCSTool](#vcstool)
+    - [Get the project](#get-the-project)
+    - [Install dependencies](#install-dependencies)
+      - [ROS2](#ros2)
+      - [GRPC](#grpc)
+  - [Build](#build)
+  - [Run without docker](#run-without-docker)
+  - [Docker Run](#docker-run)
+    - [Setup](#setup)
+    - [Run with docker-compose](#run-with-docker-compose)
+  - [FAQ](#faq)
+    - [Permission denied for docker hub](#permission-denied-for-docker-hub)
+    - [Build fails with `protobuf` error](#build-fails-with-protobuf-error)
+  - [Run workflow with act](#run-workflow-with-act)
+
+**For detailed instructions see the**:
+- [Setup Local](setup_local.md)
+- [Setup with Docker Compose](setup_with_docker_compose.md)
+- [Set with Docker](setup_with_docker.md)
+
 ## Download 
 
 ### VCSTool
@@ -97,7 +122,6 @@ source install/setup.bash
 
 TODO: Add the one liner to run the project
 
-## 
 
 ## Docker Run
 

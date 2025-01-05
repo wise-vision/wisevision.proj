@@ -1,24 +1,44 @@
 # How to Set Up Local Environment
-## Prequistances
+
+## Prerequisites
+
+Ensure you have the following prerequisites installed on your system:
+- Git
+- VCS Tool
+- ROS2 & Colcon
+
 
 ## Install and Run Dependencies
+
+The project requires the following dependencies to be installed and running on your local machine:
+- InfluxDB
+- Zenoh
+- Zenoh ROS2DDS
+- ChirpStack (LoRaWAN Network Server)
+
 ### 1. Install and Run InfluxDB
+
+#### Install InfluxDB
 - **Install**:
 ``` bash
-wget -qO- https://repos.influxdata.com/influxdb.key | sudo apt-key add -
-echo "deb https://repos.influxdata.com/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/influxdb.list
+curl -fsSL https://repos.influxdata.com/influxdata-archive_compat.key | sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/influxdata.gpg
+echo 'deb [signed-by=/etc/apt/trusted.gpg.d/influxdata.gpg] https://repos.influxdata.com/debian stable main' | sudo tee /etc/apt/sources.list.d/influxdata.list
 sudo apt update
 sudo apt install influxdb=1.8.*
-sudo systemctl start influxdb
 sudo systemctl enable influxdb
+sudo systemctl start influxdb
 ```
-- **Run**:
+
+#### Grant permissions
+``` bash
+sudo ufw allow 8086/tcp
+sudo chown -R $USER:$USER /var/lib/influxdb
+sudo chown -R influxdb:influxdb /var/lib/influxdb
+```
+
+#### Run InfluxDB
 ``` bash
 influxd
-```
-- **Fix Permission Issues**:
-``` bash
-sudo chown -R <user_name>:<user_name> /var/lib/influxdb
 ```
 
 ### 2. [Zenoh local install and run](docs/install_zenoh.md)
