@@ -3,7 +3,7 @@ repositories:
   src/wisevision_action_executor:
     type: git
     url: git@github.com:wise-vision/wisevision_action_executor.git
-    version: main
+    version: dev
   src/wisevision_core:
     type: git
     url: git@github.com:wise-vision/wisevision_core.git
@@ -15,20 +15,20 @@ repositories:
   src/wisevision_dashboard:
     type: git
     url: git@github.com:wise-vision/wisevision-dashboard.git
-    version: 2411
+    version: dev
   src/wisevision_data_black_box:
     type: git
     url: git@github.com:wise-vision/wisevision_data_black_box.git
-    version: main
+    version: dev
   src/wisevision_gps_tools:
     type: git
     url: git@github.com:wise-vision/wisevision_gps_tools.git
-    version: 2411
+    version: dev
   src/wisevision_msgs:
     type: git
     url: git@github.com:wise-vision/wisevision_msgs.git
-    version: 2411
+    version: dev
   src/wisevision_notification_manager:
     type: git
     url: git@github.com:wise-vision/wisevision_notification_manager.git
-    version: c_k/main/documentation
+    version: dev

@@ -43,45 +43,10 @@ rosdep update
 source /opt/ros/humble/setup.bash # for convenience echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc
 ```
 
-#### GRPC
+#### LoRaWAN bridge
 
-For now, the project uses the `grpc` library built from source (to be changed in future). To install it, follow the steps below:
-
-```bash
-echo "
-## GRPC
-
-export GRPC_INSTALL_DIR=$HOME/grpc_install_dir
-export PATH=$PATH:${GRPC_INSTALL_DIR}/bin
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${GRPC_INSTALL_DIR}/lib" >> ~/.bashrc
-source ~/.bashrc
-mkdir $GRPC_INSTALL_DIR
-
-# Install dependencies
-sudo apt install -y cmake build-essential autoconf libtool pkg-config libpaho-mqtt-dev  libpaho-mqttpp-dev libboost-all-dev
-# Clone the repository to the ~/grpc
-git clone --recurse-submodules -b v1.64.0 --depth 1 --shallow-submodules https://github.com/grpc/grpc $HOME/grpc
-
-# Build the library
-cd $HOME/grpc
-
-mkdir -p cmake/build
-pushd cmake/build
-cmake -DBUILD_SHARED_LIBS=ON \
-    -DCMAKE_INSTALL_PREFIX=$GRPC_INSTALL_DIR \
-    -DgRPC_BUILD_GRPC_CPP_PLUGIN=ON \
-    -DgRPC_BUILD_GRPC_CSHARP_PLUGIN=OFF \
-    -DgRPC_BUILD_GRPC_NODE_PLUGIN=OFF \
-    -DgRPC_BUILD_GRPC_OBJECTIVE_C_PLUGIN=OFF \
-    -DgRPC_BUILD_GRPC_PHP_PLUGIN=OFF \
-    -DgRPC_BUILD_GRPC_PYTHON_PLUGIN=OFF \
-    -DgRPC_BUILD_GRPC_RUBY_PLUGIN=OFF \
-    ../..
-
-make -j$(nproc --ignore=2)
-make install
-popd
-```
+Follow steps from [README](https://github.com/wise-vision/wisevision_lorawan_bridge/blob/dev/README.md) 
+file in `wisevision_lorawan_bridge` repository.
 
 ## Build
 
@@ -131,16 +96,6 @@ cd src/wisevision_msgs
 docker build -t wisevision/ros_with_wisevision_msgs:humble -f Dockerfile .
 cd ../..
 docker-compose up --build
-```
-
-### Build fails with `protobuf` error
-
-In most cases, build time error related to the `protobuf` library is due to building the `grpc` library from source with the binaries installed from the package manager. To fix this, remove the `libprotobuf-dev`, `protobuf-compiler` and `libprotoc-dev` packages and rebuild the `grpc` library from source as described in the [Install dependencies](#install-dependencies) section.
-
-```bash
-sudo apt remove --purge libprotoc-dev
-sudo apt remove --purge libprotobuf-dev
-sudo apt remove --purge protobuf-compiler
 ```
 
 ## Run workflow with act
