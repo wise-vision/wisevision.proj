@@ -43,7 +43,7 @@ rosdep update
 source /opt/ros/humble/setup.bash # for convenience echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc
 ```
 
-#### gRPC and MQTT
+#### gRPC and MQTT C++ Client Library
 
 Follow steps from [README](https://github.com/wise-vision/wisevision_lorawan_bridge/blob/dev/README.md) 
 file in `wisevision_lorawan_bridge` repository.
