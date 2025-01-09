@@ -43,10 +43,69 @@ rosdep update
 source /opt/ros/humble/setup.bash # for convenience echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc
 ```
 
-#### gRPC and MQTT C++ Client Library
+#### MQTT C++ Client Library
 
-Follow steps from [README](https://github.com/wise-vision/wisevision_lorawan_bridge/blob/dev/README.md) 
-file in `wisevision_lorawan_bridge` repository.
+MQTT client library is used to connect with Chirpstack API in LoRaWAN bridge.
+
+```bash
+sudo apt install libpaho-mqtt-dev libpaho-mqttpp-dev
+```
+
+#### gRPC
+
+gRPC has to be built from source to use C++ plugin which generates C++ source files from `.proto`.
+
+1. Define gRPC installation directory and export variable.
+```bash
+export GRPC_INSTALL_DIR=$HOME/grpc_install_dir
+mkdir $GRPC_INSTALL_DIR
+```
+
+2. Make sure that there is CMake version 3.13 or later. Try installing from package.
+```bash
+sudo apt install -y cmake
+```
+Check CMake version and if it is too low, install if from source.
+```bash
+cmake --version
+```
+
+3. Install other required packages.
+```bash
+sudo apt install -y build-essential autoconf libtool pkg-config
+```
+
+4. Clone gRPC repository.
+```bash
+git clone --recurse-submodules -b v1.64.0 --depth 1 --shallow-submodules https://github.com/grpc/grpc
+```
+
+5. Build and install gRPC and Protocol Buffers.
+```bash
+cd grpc
+mkdir -p cmake/build
+pushd cmake/build
+cmake -DBUILD_SHARED_LIBS=ON \
+    -DCMAKE_INSTALL_PREFIX=$GRPC_INSTALL_DIR \
+    -DgRPC_BUILD_GRPC_CPP_PLUGIN=ON \
+    -DgRPC_BUILD_GRPC_CSHARP_PLUGIN=OFF \
+    -DgRPC_BUILD_GRPC_NODE_PLUGIN=OFF \
+    -DgRPC_BUILD_GRPC_OBJECTIVE_C_PLUGIN=OFF \
+    -DgRPC_BUILD_GRPC_PHP_PLUGIN=OFF \
+    -DgRPC_BUILD_GRPC_PYTHON_PLUGIN=OFF \
+    -DgRPC_BUILD_GRPC_RUBY_PLUGIN=OFF \
+    ../..
+make -j 4 # if your machine is stronger, consider increasing number of jobs or skip it altogether to run without constraints
+make install
+popd
+```
+
+6. Export variables to be able to load built shared libraries and include headers. It is recommended to put those variables inside `.bashrc` file.
+```bash
+export GRPC_INSTALL_DIR=${HOME}/grpc_install_dir
+export PATH=$PATH:${GRPC_INSTALL_DIR}/bin
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${GRPC_INSTALL_DIR}/lib
+```
 
 ## Build
 
@@ -54,15 +113,13 @@ file in `wisevision_lorawan_bridge` repository.
 cd wisevision.proj # or the directory where the project.repos file is located
 colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release
 ```
-## Run without docker
-
-```bash
-source install/setup.bash
-```
-
-TODO: Add the one liner to run the project
-
-## 
+<!-- ## Run without docker -->
+<!---->
+<!-- ```bash -->
+<!-- source install/setup.bash -->
+<!-- ``` -->
+<!---->
+<!-- TODO: Add the one liner to run the project -->
 
 ## Docker Run
 
