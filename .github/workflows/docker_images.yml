@@ -139,7 +139,7 @@ jobs:
 
       - name: Build and push Docker image for multiple architectures
         run: |
-          docker buildx build --platform linux/amd64, linux/arm64 \
+          docker buildx build --platform linux/amd64,linux/arm64 \
           --file docker-files/wisevision-base-image/Dockerfile \
           --tag ${{ secrets.DOCKER_HUB_USERNAME }}/ros_with_wisevision_msgs_and_wisevision_core:humble \
           --push \
@@ -179,7 +179,7 @@ jobs:
 
       - name: Build and push Docker image for multiple architectures
         run: |
-          docker buildx build --platform linux/amd64 \
+          docker buildx build --platform linux/amd64,linux/arm64 \
           --file docker-files/wisevision-base-and-grpc-image/Dockerfile \
           --tag ${{ secrets.DOCKER_HUB_USERNAME }}/ros_with_wisevision_msgs_wisevision_core_and_wisevision_msgs:humble \
           --push \
