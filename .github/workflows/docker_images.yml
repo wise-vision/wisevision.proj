@@ -15,7 +15,7 @@ on:
   schedule:
     - cron: '0 4 * * 0'
 
-# jobs:
+jobs:
 #   build_base_image:
 #     if: github.event_name == 'pull_request'
 #     runs-on: self-hosted
