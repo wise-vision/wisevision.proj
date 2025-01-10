@@ -3,7 +3,7 @@ name: Build and Push Multi-Architecture Docker Image ros_with_wisevision_msgs_wi
 on:
   workflow_run:
     workflows:
-      - Build and Push Multi-Architecture Docker Image ros_with_wisevision_msgs_and_wisevision_core:humble
+      - Build and Push Image Base
     types:
       - completed
 

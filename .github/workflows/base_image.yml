@@ -1,4 +1,4 @@
-name: Build and Push Multi-Architecture Docker Image ros_with_wisevision_msgs_and_wisevision_core:humble
+name: Build and Push Image Base
 
 on:
   push:
@@ -72,6 +72,8 @@ jobs:
 
     - name: Build and push Docker image for multiple architectures
       run: |
-        cd ./docker-files/wisevision-base-image
         docker buildx build --platform linux/amd64,linux/arm64 \
-          --tag ${{ secrets.DOCKER_HUB_USERNAME }}/ros_with_wisevision_msgs_and_wisevision_core:humble --push .
+        --file docker-files/wisevision-base-image/Dockerfile \
+        --tag ${{ secrets.DOCKER_HUB_USERNAME }}/ros_with_wisevision_msgs_and_wisevision_core:humble \
+        --push \
+        .
