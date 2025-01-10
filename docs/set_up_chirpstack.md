@@ -1,8 +1,8 @@
-# How to set up chirpstack
+# How to Set Up ChirpStack
 
 Chirpstack is an open-source LoRaWAN Network Server stack. It is responsible for handling the communication between the LoRaWAN end-devices and the application server. In the WiseVision project, it is used to manage the communication between the LoRaWAN end-devices and the WiseVision bridge.
 
-## Run chirpstack in docker
+## Run Chirpstack in Docker
 
 ### Clone the repository:
 1. Clone the repository:
@@ -45,7 +45,7 @@ docker compose up
 # or for older versions docker-compose up 
 ```
 
-## How to add gateway
+## How to Add Gateway
 1. Start the gateway in another terminal (if it's already set up, if not [set up gateway](set_up_gateway.md)):
 ``` bash
 cd sx1302_hal-2.0.1/packet_forwarder
@@ -63,18 +63,18 @@ sudo ./lora_pkt_fwd
 
 <img src="assets/add_gateway_data.png" alt="Add gateway data" width="900" />
 
-## How to create application
+## How to Create Application
 1. On the left bar click on `Aplications`. (`1.` on the image below)
 2. Click on the `Add gateway`. (`2.` on the image below)
 
 <img src="assets/add_application_start.png" alt="Add application start" width="900" />
 
 3. Write name for application. (`1`. on the image below)
-4. Save application by click `Submit` (`2.` on the image below)
+4. Save application by click `Submit` (`2`. on the image below)
 
 <img src="assets/add_application_data.png" alt="Add applcation data" width="900" />
 
-## How to create device profile
+## How to Create Device Profile
 1. On the left bar click on `Device Profiles`. (`1.` on the image below)
 2. Click on the `Add device profile`. (`2.` on the image below)
 
@@ -90,7 +90,7 @@ sudo ./lora_pkt_fwd
 
 <img src="assets/add_device_profile_class_c.png" alt="Add device profile class C" width="900" />
 
-## How to add device to application
+## How to Add Device to Application
 1. On the left bar click on `Applications`. (`1.` on the image below)
 2. Choose the application to add the device to. (`2.` on the image below)
 
@@ -108,7 +108,7 @@ sudo ./lora_pkt_fwd
 
 <img src="assets/add_device_data.png" alt="Add device data" width="900" />
 
-## How to get Application id
+## How to Get Application ID
 
 1. On the left bar click on `Applications`. (`1.` on the image below)
 2. Choose the application to get the `application ID` from. (`2.` on the image below)
@@ -119,7 +119,7 @@ sudo ./lora_pkt_fwd
 
 <img src="assets/application_id_data.png" alt="Application id data" width="900" />
 
-## How to create API key
+## How to Create API Key
 
 1. On the left bar click on `API keys`. (`1.` on the image below)
 2. Click on the `Add API key`. (`2.` on the image below)

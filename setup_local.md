@@ -1,4 +1,4 @@
-# How to Set Up Local Environment
+# Local Environment Setup
 
 ## Prerequisites
 
@@ -96,7 +96,7 @@ source install/setup.bash
 ros2 run wisevision_data_black_box black_box
 ```
 
-#### Configure and Run ros2_lora_bridge
+### Configure and Run ros2_lora_bridge
 1. Start chirpstack in another terminal and open http://localhost:8080. Log in with admin/admin.
 2. Set environment variables:
  - [Create API Key](docs/set_up_chirpstack.md#how-to-create-api-key) and paste into `my_new_token` in command bellow and run this command:
