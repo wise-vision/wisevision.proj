@@ -3,10 +3,10 @@ name: Docker images build and push
 on:
   pull_request:
     branches:
-      - main
-    paths:
-      - 'docker-files/wisevision-base-image/**'
-      - 'docker-files/wisevision-base-and-grpc-image/**'
+      - dev
+    # paths:
+    #   - 'docker-files/wisevision-base-image/**'
+    #   - 'docker-files/wisevision-base-and-grpc-image/**'
   push:
     branches:
       - main
@@ -15,76 +15,76 @@ on:
   schedule:
     - cron: '0 4 * * 0'
 
-jobs:
-  build_base_image:
-    if: github.event_name == 'pull_request'
-    runs-on: self-hosted
-    container:
-      image: ubuntu:22.04
+# jobs:
+#   build_base_image:
+#     if: github.event_name == 'pull_request'
+#     runs-on: self-hosted
+#     container:
+#       image: ubuntu:22.04
     
-    steps:
-      - name: Install Git
-        run: |
-          apt-get update
-          apt-get install -y git
+#     steps:
+#       - name: Install Git
+#         run: |
+#           apt-get update
+#           apt-get install -y git
 
-      - name: Install vcs
-        run: |
-          apt-get update
-          apt-get install -y python3-pip
-          pip3 install vcstool
+#       - name: Install vcs
+#         run: |
+#           apt-get update
+#           apt-get install -y python3-pip
+#           pip3 install vcstool
 
-      - name: Checkout repository
-        uses: actions/checkout@v3
-        with:
-          token: ${{ secrets.PAT_TOKEN }}
+#       - name: Checkout repository
+#         uses: actions/checkout@v3
+#         with:
+#           token: ${{ secrets.PAT_TOKEN }}
       
-      - name: Configure Git for https access
-        run: |
-          git config --global url."https://${{ secrets.PAT_TOKEN }}@github.com/".insteadOf "https://github.com/"
+#       - name: Configure Git for https access
+#         run: |
+#           git config --global url."https://${{ secrets.PAT_TOKEN }}@github.com/".insteadOf "https://github.com/"
 
-      - name: Import repositories using vcs
-        run: |
-          vcs import --recursive < ./docker-files/wisevision-base-image/image.repos
+#       - name: Import repositories using vcs
+#         run: |
+#           vcs import --recursive < ./docker-files/wisevision-base-image/image.repos
 
-      - name: Install Docker CLI
-        run: |
-          apt-get update
-          apt-get install -y docker.io
+#       - name: Install Docker CLI
+#         run: |
+#           apt-get update
+#           apt-get install -y docker.io
 
-      - name: Docker build
-        run: |
-          docker build -t wisevision_base_image ./docker-files/wisevision-base-image
+#       - name: Docker build
+#         run: |
+#           docker build -t wisevision_base_image ./docker-files/wisevision-base-image
 
-  build_base_and_grpc_image:
-    if: github.event_name == 'schedule'
-    runs-on: self-hosted
-    container:
-      image: ubuntu:22.04
+  # build_base_and_grpc_image:
+  #   if: github.event_name == 'schedule'
+  #   runs-on: self-hosted
+  #   container:
+  #     image: ubuntu:22.04
 
-    steps:
-      - name: Install Git
-        run: |
-          apt-get update
-          apt-get install -y git
+  #   steps:
+  #     - name: Install Git
+  #       run: |
+  #         apt-get update
+  #         apt-get install -y git
 
-      - name: Install vcs
-        run: |
-          apt-get update
-          apt-get install -y python3-pip
-          pip3 install vcstool
+  #     - name: Install vcs
+  #       run: |
+  #         apt-get update
+  #         apt-get install -y python3-pip
+  #         pip3 install vcstool
 
-      - name: Checkout repository
-        uses: actions/checkout@v3
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v3
       
-      - name: Install Docker CLI
-        run: |
-          apt-get update
-          apt-get install -y docker.io
+  #     - name: Install Docker CLI
+  #       run: |
+  #         apt-get update
+  #         apt-get install -y docker.io
 
-      - name: Docker build
-        run: |
-          docker build -t wisevision_base_image ./docker-files/wisevision-base-and-grpc-image
+  #     - name: Docker build
+  #       run: |
+  #         docker build -t wisevision_base_image ./docker-files/wisevision-base-and-grpc-image
 
   build_and_push_base_image:
     if: github.event_name == 'push' || (github.event_name == 'repository_dispatch' && github.event.action == 'trigger-build-and-push')
