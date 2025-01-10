@@ -3,7 +3,7 @@ name: Build and run ROS2 tests
 on:
   pull_request:
     branches:
-      - dev
+      # - dev
       - main
       - 'stabilization/**'
       - 'testing/**'
