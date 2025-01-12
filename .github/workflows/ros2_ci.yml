@@ -17,7 +17,7 @@ jobs:
       matrix:
         os: [ubuntu-22.04, ubuntu-24.04]
 
-    runs-on: ${{ matrix.os }}
+    runs-on: self-hosted
 
     continue-on-error: true
 
@@ -114,3 +114,7 @@ jobs:
         . /opt/ros/humble/setup.sh
         colcon test --executor sequential
         colcon test-result --verbose
+
+    - name: Cleanup temporary files
+      if: always()
+      run: rm -rf $RUNNER_TEMP/*
