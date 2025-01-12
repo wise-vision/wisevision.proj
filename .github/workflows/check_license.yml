@@ -10,7 +10,7 @@ on:
 
 jobs:
   check-license-headers:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - name: Check out repository
         uses: actions/checkout@v3
