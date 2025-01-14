@@ -1,5 +1,0 @@
-repositories:
-  external/chirpstack-docker:
-    type: git
-    url: git@github.com:chirpstack/chirpstack-docker.git
-    version: master
