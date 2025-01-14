@@ -181,6 +181,6 @@ jobs:
         run: |
           docker buildx build --platform linux/amd64,linux/arm64 \
           --file docker-files/wisevision-base-and-grpc-image/Dockerfile \
-          --tag ${{ secrets.DOCKER_HUB_USERNAME }}/ros_with_wisevision_msgs_wisevision_core_and_wisevision_msgs:humble \
+          --tag ${{ secrets.DOCKER_HUB_USERNAME }}/ros_with_wisevision_msgs_wisevision_core_and_grpc:humble \
           --push \
           .
