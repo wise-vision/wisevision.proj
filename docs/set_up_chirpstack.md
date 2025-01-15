@@ -5,13 +5,13 @@ Chirpstack is an open-source LoRaWAN Network Server stack. It is responsible for
 ## Run Chirpstack in Docker
 
 ### Clone the repository
-1. Clone the repository:
+1. Clone the repository.
 ```bash
 vcs import --recursive < project.repos
 ```
 
 ### Run `Chirpstack`
-1. Run:
+1. Run.
 ``` bash
 cd src/wisevision_lorawan_bridge/chirpstack_docker
 docker compose up 
@@ -19,7 +19,7 @@ docker compose up
 ```
 
 ## How to Add Gateway
-1. Start the gateway in another terminal (if it's already set up, if not [setup gateway](set_up_gateway.md)):
+1. Start the gateway in another terminal (if it's already set up, if not [setup gateway](set_up_gateway.md)).
 ``` bash
 cd sx1302_hal/packet_forwarder
 sudo ./lora_pkt_fwd
@@ -31,7 +31,7 @@ sudo ./lora_pkt_fwd
 <img src="assets/add_gateway_start.png" alt="Add gateway start" width="900" />
 
 5. Write name for gateway. (`1`. on the image below)
-6. Write gateway ID (EUI) [How to get gateway ID](set_up_gateway.md#get-gateway-id) (`2.` on the image below)
+6. Write gateway ID (EUI) [How to get gateway ID](set_up_gateway.md#get-gateway-id). (`2.` on the image below)
 7. Save gateway by click `Submit` (`3.` on the image below)
 
 <img src="assets/add_gateway_data.png" alt="Add gateway data" width="900" />
@@ -43,7 +43,7 @@ sudo ./lora_pkt_fwd
 <img src="assets/add_application_start.png" alt="Add application start" width="900" />
 
 3. Write name for application. (`1`. on the image below)
-4. Save application by click `Submit` (`2`. on the image below)
+4. Save application by click `Submit`. (`2`. on the image below)
 
 <img src="assets/add_application_data.png" alt="Add applcation data" width="900" />
 
@@ -54,13 +54,13 @@ sudo ./lora_pkt_fwd
 <img src="assets/add_device_profile_start.png" alt="Add device profile start" width="900" />
 
 3. Write name for device profile (this name has to be the same name of the parser class in `wisevision_lorawan_bridge`
-for this device, this name is case sensitive) (`1.` on the image below)
-4. If device is class C device click on the `Class-C` (`2.` on the image below)
+for this device, this name is case sensitive). (`1.` on the image below)
+4. If device is class C device click on the `Class-C`. (`2.` on the image below)
 
 <img src="assets/add_device_profile_data.png" alt="Add device profile data" width="900" />
 
-5. Switch `Device supports Class-C` (`1.` on the image below)
-6. Save device profile by click `Submit` (`2.` on the image below)
+5. Switch `Device supports Class-C`. (`1.` on the image below)
+6. Save device profile by click `Submit`. (`2.` on the image below)
 
 <img src="assets/add_device_profile_class_c.png" alt="Add device profile class C" width="900" />
 
@@ -78,7 +78,7 @@ for this device, this name is case sensitive) (`1.` on the image below)
 5. Write device `EUI`. (`2.` on the image below)
 6. Write device `Join EUI`. (`3.` on the image below)
 7. Choose correct device profile. (`4.` on the image below)
-8. Save device by click `Submit` (`5.` on the image below)
+8. Save device by click `Submit`. (`5.` on the image below)
 
 <img src="assets/add_device_data.png" alt="Add device data" width="900" />
 
@@ -105,7 +105,7 @@ for this device, this name is case sensitive) (`1.` on the image below)
 
 <img src="assets/add_api_key_data.png" alt="API key data" width="900" />
 
-5. `API key` is here (`1.` on the image below)
+5. `API key` is here. (`1.` on the image below)
 6. Click on the `Submit`. (`2.` on the image below)
 7. Store the value in environment variable `CHIRPSTACK_API_TOKEN`.
 

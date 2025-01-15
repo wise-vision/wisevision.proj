@@ -147,11 +147,12 @@ colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release
 
 ## Docker Run
 
-Other way to run the project is to use docker-compose. This step requires `docker`, `docker-compose` installed and also the GitHub token to be set in the environment
+Other way to run the project is to use docker-compose. This step requires `docker`, `docker-compose`
+installed and also the GitHub token to be set in the environment.
 
 ### Setup
 
-It is required to set up 
+It is required to set up.
 
 ```bash
 vcs import --recursive < project.repos
@@ -183,6 +184,7 @@ docker-compose up --build
 
 Install `act` tool [link](https://github.com/nektos/act).
 
+Run:
 ```bash
 act pull_request -W .github/workflows/ros2_ci.yml -j build -P ubuntu-22.04=catthehacker/ubuntu:act-22.04 --secret SSH_KEY="$(cat path/to/your/private_key)"
 ```
