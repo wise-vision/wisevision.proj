@@ -49,8 +49,8 @@ services:
 
   wisevision_lorawan_bridge:
     extends:
-      file: ./src/ros2_lora_bridge/docker-compose.yml
-      service: ros2_lora_bridge
+      file: ./src/wisevision_lorawan_bridge/docker-compose.yml
+      service: wisevision_lorawan_bridge
 
   wisevision_gps_tools:
     extends:

@@ -26,21 +26,25 @@ Copy `exmaple_config.json` into `ros2_black_box` directory
 ``` bash
 cp config_example.json src/wisevision_data_black_box/config.json
 ```
-#### Config ros2_lora_bridge
+#### Config wisevision_lorawan_bridge
 1. Create `.env` file for enviroment variables
 ``` bash
 cd ~/wisevision.proj
-cp src/ros2_lora_bridge/.env_example src/ros2_lora_bridge/.env
+cp src/wisevision_lorawan_bridge/.env_example src/wisevision_lorawan_bridge/.env
 ```
  - [Create API Key](docs/set_up_chirpstack.md#how-to-create-api-key) and paste into `my_new_token` in command bellow and run this command:
 ```
- sed -i 's/^API_TOKEN=.*/API_TOKEN=my_new_token/' src/ros2_lora_bridge/.env
+ sed -i 's/^CHIRPSTACK_API_TOKEN=.*/CHIRPSTACK_API_TOKEN=my_new_token/' src/wisevision_lorawan_bridge/.env
  ```
  - On chirpstack ui [add aplication](docs/set_up_chirpstack.md#how-to-create-application).
    - [Copy `aplication id`](docs/set_up_chirpstack.md#how-to-get-application-id) and paste into `my_new_application_id` in command bellow and run this command:
   ```
-  sed -i 's/^APPLICATION_ID=.*/APPLICATION_ID=my_new_application_id/' src/ros2_lora_bridge/.env
+  sed -i 's/^APPLICATION_ID=.*/APPLICATION_ID=my_new_application_id/' src/wisevision_lorawan_bridge/.env
   ```
+2. After created `.env` file copy to `wisevision.proj` directory:
+```bash
+cp src/wisevision_lorawan_bridge/.env .env
+```
 #### Config wisevision_notification_manager
 1. Creat config files
 - Config for email

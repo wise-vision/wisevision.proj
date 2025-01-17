@@ -131,7 +131,7 @@ It is required to set up
 
 ```bash
 vcs import --recursive < project.repos
-cp src/ros2_lora_bridge/.env_example src/ros2_lora_bridge/.env  
+cp src/wisevision_lorawan_bridge/.env_example src/ros2_lora_bridge/.env  
 ```
 
 ### Run with docker-compose
