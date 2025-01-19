@@ -96,22 +96,22 @@ source install/setup.bash
 ros2 run wisevision_data_black_box black_box
 ```
 
-### Configure and Run ros2_lora_bridge
-1. Start chirpstack in another terminal and open http://localhost:8080. Log in with admin/admin.
-2. Set environment variables:
+### Configure and Run wisevision_lorawan_bridge
+1. Start Chirpstack in another terminal and open http://localhost:8080. Log in with admin/admin.
+2. Set environment variables.
  - [Create API Key](docs/set_up_chirpstack.md#how-to-create-api-key) and paste into `my_new_token` in command bellow and run this command:
+    ```bash
+    export CHIRPSTACK_API_KEY=<my_new_token>
     ```
-    export API_TOKEN=<my_new_token>
-    ```
- - On chirpstack ui [add aplication](docs/set_up_chirpstack.md#how-to-create-application).
+ - On Chirpstack UI [add aplication](docs/set_up_chirpstack.md#how-to-create-application).
   - [Copy `aplication id`](docs/set_up_chirpstack.md#how-to-get-application-id) and paste into `my_new_application_id` in command bellow and run this command:
-    ```
+    ```bash
     export APPLICATION_ID=<my_new_application_id>
     ```
-3. Run:
+3. Run.
 ```bash
 source install/setup.bash
-ros2 run ros2_lora_bridge ros2_lora_bridge --ros-args  --param application_id:=$APPLICATION_ID
+ros2 run wisevision_lorawan_bridge lorawan_bridge --ros-args --param application_id:=$APPLICATION_ID --param use_only_standard:=false
 ```
 
 ### Run wisevision_action_executor
@@ -136,7 +136,7 @@ source intsall/setup.bash
 ros2 run wisevision_notification_manager notifications_handler --ros-args -p use_email_notifier:=true-p use_firebase_notifier:=false
 ```
 
-### wisevision_dashboard 
+### Run wisevision_dashboard 
 
 1. Install requirments and run server.
 ```bash
