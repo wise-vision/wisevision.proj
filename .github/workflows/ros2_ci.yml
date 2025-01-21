@@ -97,11 +97,18 @@ jobs:
         export GRPC_INSTALL_DIR=$HOME/grpc_install_dir
         export PATH=$GRPC_INSTALL_DIR/bin:$PATH
         export LD_LIBRARY_PATH=$GRPC_INSTALL_DIR/lib:$LD_LIBRARY_PATH
+        cd wisevision_ws
         . /opt/ros/humble/setup.sh
         colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release
 
     - name: Test result summary
       run: |
+        cd wisevision_ws
         . /opt/ros/humble/setup.sh
         colcon test --executor sequential
         colcon test-result --verbose
+
+    - name: Clean up workspace
+      if: always()
+      run: |
+        sudo rm -rf wisevision_ws
