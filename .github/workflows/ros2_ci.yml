@@ -17,7 +17,7 @@ jobs:
       matrix:
         os: [ubuntu-22.04, ubuntu-24.04]
 
-    runs-on: ${{ matrix.os }}
+    runs-on: self-hosted
 
     continue-on-error: true
 
@@ -68,7 +68,11 @@ jobs:
         apt-get install -y wget build-essential gcc make cmake libssl-dev autoconf libtool pkg-config 
         apt-get install -y libpaho-mqtt-dev  libpaho-mqttpp-dev 
         apt-get install -y libboost-all-dev 
-        sudo /bin/bash -c wisevision_ws/wisevision.proj/install_depends.sh
+        sudo apt-get install -y python3-pip libyaml-cpp-dev libjsoncpp-dev libcurl4-openssl-dev \
+                                curl wget build-essential gcc make cmake libssl-dev autoconf \
+                                libtool pkg-config nodejs npm docker.io docker-compose
+        npm install -y react-router-dom
+        pip install flask
         if [ ! -f /etc/ros/rosdep/sources.list.d/20-default.list ]; then
           sudo rosdep init
         fi
@@ -99,9 +103,9 @@ jobs:
 
     - name: Build test
       run: |
-        export GRPC_INSTALL_DIR=$HOME/grpc_install_dir
-        export PATH=$GRPC_INSTALL_DIR/bin:$PATH
-        export LD_LIBRARY_PATH=$GRPC_INSTALL_DIR/lib:$LD_LIBRARY_PATH
+        export GRPC_INSTALL_DIR=${HOME}/grpc_install_dir
+        export PATH=$PATH:${GRPC_INSTALL_DIR}/bin
+        export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${GRPC_INSTALL_DIR}/lib
         . /opt/ros/humble/setup.sh
         colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release
 
@@ -110,3 +114,7 @@ jobs:
         . /opt/ros/humble/setup.sh
         colcon test --executor sequential
         colcon test-result --verbose
+
+    - name: Cleanup temporary files
+      if: always()
+      run: rm -rf $RUNNER_TEMP/*

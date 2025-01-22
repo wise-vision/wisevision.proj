@@ -1,0 +1,26 @@
+name: Check MPL License Headers
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - 'stabilization/*'
+      - dev
+
+jobs:
+  check-license-headers:
+    runs-on: self-hosted
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Run license header check
+        run: |
+          chmod +x tools/license_header.py
+          tools/license_header.py --exclude-dirs log, build, .git, .github, src
