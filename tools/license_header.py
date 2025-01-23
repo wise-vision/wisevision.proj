@@ -12,7 +12,7 @@ import os
 import sys
 import argparse
 
-EXACT_LICENSE_TEXT = """/*
+EXACT_LICENSE_TEXT_VER_1 = """/*
  * Copyright (C) 2025 wisevision
  *
  * SPDX-License-Identifier: MPL-2.0
@@ -23,7 +23,7 @@ EXACT_LICENSE_TEXT = """/*
  */
 """
 
-EXACT_LICENSE_TEXT_PY = """#
+EXACT_LICENSE_TEXT_VER_2 = """#
 #  Copyright (C) 2025 wisevision
 #
 #  SPDX-License-Identifier: MPL-2.0
@@ -34,30 +34,56 @@ EXACT_LICENSE_TEXT_PY = """#
 #
 """
 
+EXACT_LICENSE_TEXT_VER_3 = """<!--
+  Copyright (C) 2025 wisevision
+
+  SPDX-License-Identifier: MPL-2.0
+
+  This Source Code Form is subject to the terms of the Mozilla Public
+  License, v. 2.0. If a copy of the MPL was not distributed with this
+  file, You can obtain one at https://mozilla.org/MPL/2.0/.
+-->"""
+
 # Some simple detection: we check if the file contains a key line from the header
 HEADER_KEY_LINE = "This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0."
 
 # File extensions we want to process
-ALLOWED_EXTENSIONS = {
+ALLOWED_EXTENSIONS_VER_1 = [
     ".c",
     ".cpp",
     ".h",
     ".hpp",
-    ".py",
     ".js",
+    ".jsx",
     ".ts",
     ".java",
-    ".rb",
     ".go",
-    ".sh",
     ".cs",
-}
+    ".css",
+]
+ALLOWED_EXTENSIONS_VER_2 = [
+    ".py",
+    ".rb",
+    ".sh",
+    ".msg",
+    ".srv",
+    ".action",
+]
+ALLOWED_EXTENSIONS_VER_3 = [".html"]
+
+ALLOWED_EXTENSIONS = (
+    ALLOWED_EXTENSIONS_VER_1 + ALLOWED_EXTENSIONS_VER_2 + ALLOWED_EXTENSIONS_VER_3
+)
 
 
 def has_license_header(content: str, ext: str) -> bool:
-    if ext.lower() in {".py", ".rb", ".sh"}:
-        return EXACT_LICENSE_TEXT_PY in content
-    return EXACT_LICENSE_TEXT in content
+    ext_lower = ext.lower()
+    if ext_lower in ALLOWED_EXTENSIONS_VER_1:
+        return EXACT_LICENSE_TEXT_VER_1 in content
+    if ext_lower in ALLOWED_EXTENSIONS_VER_2:
+        return EXACT_LICENSE_TEXT_VER_2 in content
+    if ext_lower in ALLOWED_EXTENSIONS_VER_3:
+        return EXACT_LICENSE_TEXT_VER_3 in content
 
 
 def is_binary_file(filepath: str) -> bool:
@@ -72,9 +98,13 @@ def is_binary_file(filepath: str) -> bool:
 
 
 def get_license_header(ext: str) -> str:
-    if ext.lower() in {".py", ".rb", ".sh"}:
-        return EXACT_LICENSE_TEXT_PY
-    return EXACT_LICENSE_TEXT
+    ext_lower = ext.lower()
+    if ext_lower in ALLOWED_EXTENSIONS_VER_1:
+        return EXACT_LICENSE_TEXT_VER_1
+    if ext_lower in ALLOWED_EXTENSIONS_VER_2:
+        return EXACT_LICENSE_TEXT_VER_2
+    if ext_lower in ALLOWED_EXTENSIONS_VER_3:
+        return EXACT_LICENSE_TEXT_VER_3
 
 
 def add_header_to_file(filepath: str) -> bool:
@@ -140,7 +170,7 @@ def process_path(path: str, fix: bool, exclude_dirs: list) -> bool:
         return True  # Skip excluded paths
     if os.path.isfile(path):
         if fix:
-            added = add_header_to_file(path)
+            add_header_to_file(path)
             return True  # Even if not added, not a "failure"
         else:
             return check_header_in_file(path)
