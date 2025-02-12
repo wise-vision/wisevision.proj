@@ -1,3 +1,11 @@
+# 
+#  Copyright (C) 2025  wisevision
+# 
+#  This Source Code Form is subject to the terms of the Mozilla Public
+#  License, v. 2.0. If a copy of the MPL was not distributed with this
+#  file, You can obtain one at https://mozilla.org/MPL/2.0/.
+#
+
 FROM wisevision/ros_with_wisevision_msgs:humble
 
 ENV GRPC_INSTALL_DIR=/root/grpc_install_dir

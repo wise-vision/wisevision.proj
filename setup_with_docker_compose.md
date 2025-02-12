@@ -1,4 +1,4 @@
-# How to run docker compose?
+# Docker Compose Setup
 ## Before run
 - Clone repos:
 ``` bash

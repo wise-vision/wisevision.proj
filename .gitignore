@@ -3,6 +3,10 @@ build/
 install/
 log/
 src/**
+external/**
+
+# LoRaWAN gateway packet forwareder
+sx1302_hal/**
 
 #configs
 zenoh_router.json5

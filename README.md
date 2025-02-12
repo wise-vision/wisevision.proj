@@ -2,6 +2,30 @@
 Repository containing sub-repos for setting up the whole project
 
 
+## Table of Contents
+
+- [wisevision.proj](#wisevisionproj)
+  - [Table of Contents](#table-of-contents)
+  - [Download](#download)
+    - [VCSTool](#vcstool)
+    - [Get the project](#get-the-project)
+    - [Install dependencies](#install-dependencies)
+      - [ROS2](#ros2)
+      - [MQTT C++ Client Library](#mqtt-c-client-library)
+      - [gRPC](#grpc)
+  - [Build](#build)
+  - [Docker Run](#docker-run)
+    - [Setup](#setup)
+    - [Run with docker-compose](#run-with-docker-compose)
+  - [FAQ](#faq)
+    - [Permission denied for docker hub](#permission-denied-for-docker-hub)
+  - [Run workflow with act](#run-workflow-with-act)
+
+**For more details, visit**:
+- [Setup Local](setup_local.md)
+- [Setup with Docker Compose](setup_with_docker_compose.md)
+- [Setup with Docker](setup_with_docker.md)
+
 ## Download 
 
 ### VCSTool
@@ -123,22 +147,23 @@ colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release
 
 ## Docker Run
 
-Other way to run the project is to use docker-compose. This step requires `docker`, `docker-compose` installed and also the GitHub token to be set in the environment
+Other way to run the project is to use docker-compose. This step requires `docker`, `docker-compose`
+installed and also the GitHub token to be set in the environment.
 
 ### Setup
 
-It is required to set up 
+It is required to set up.
 
 ```bash
 vcs import --recursive < project.repos
-cp src/wisevision_lorawan_bridge/.env_example src/ros2_lora_bridge/.env  
+cp src/wisevision_lorawan_bridge/.env_example src/wisevision_lorawan_bridge/.env  
 ```
 
 ### Run with docker-compose
 
 Will be removed in the future but for now, it is required to build the image locally to get the [GitHub token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens).
 
-```
+```bash
 $ GITHUB_TOKEN=<YOUR-GH-TOKEN> docker-compose up --build  
 ```
 
@@ -159,6 +184,7 @@ docker-compose up --build
 
 Install `act` tool [link](https://github.com/nektos/act).
 
+Run:
 ```bash
 act pull_request -W .github/workflows/ros2_ci.yml -j build -P ubuntu-22.04=catthehacker/ubuntu:act-22.04 --secret SSH_KEY="$(cat path/to/your/private_key)"
 ```
