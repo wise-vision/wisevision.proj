@@ -12,7 +12,7 @@ on:
 
 jobs:
   build:
-    runs-on: self-hosted
+    runs-on: wisevision-runner
 
     continue-on-error: true
 
@@ -20,19 +20,6 @@ jobs:
       image: ros:humble-ros-base
 
     steps:
-    - name: Install SSH
-      run: |
-        apt-get update
-        apt-get install -y openssh-client
-        
-    - name: Install Node.js
-      run: |
-        apt-get update
-        apt-get install -y nodejs npm
-
-    - uses: webfactory/ssh-agent@v0.7.0
-      with:
-        ssh-private-key: ${{ secrets.SSH_KEY }}
 
     - name: Create workspace directory
       run: |
@@ -41,15 +28,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
       with:
-        ssh-key: ${{ secrets.SSH_KEY }}
         path: wisevision_ws/wisevision.proj     
-
-    - name: Set up SSH for Git authentication
-      run: |
-        mkdir -p ~/.ssh
-        echo "${{ secrets.SSH_KEY }}" > ~/.ssh/id_rsa
-        chmod 600 ~/.ssh/id_rsa
-        ssh-keyscan github.com >> ~/.ssh/known_hosts
 
     - name: Import repositories using vcs
       run: |

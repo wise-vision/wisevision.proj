@@ -10,7 +10,7 @@ on:
 
 jobs:
   check-license-headers:
-    runs-on: self-hosted
+    runs-on: wisevision-runner
     steps:
       - name: Check out repository
         uses: actions/checkout@v3
