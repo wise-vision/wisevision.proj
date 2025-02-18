@@ -145,6 +145,8 @@ colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release
 <!---->
 <!-- TODO: Add the one liner to run the project -->
 
+**To run WiseVision locally, follow steps**: [Setup Local](setup_local.md)
+
 ## Docker Run
 
 Other way to run the project is to use docker-compose. This step requires `docker`, `docker-compose`
@@ -159,6 +161,8 @@ vcs import --recursive < project.repos
 cp src/wisevision_lorawan_bridge/.env_example src/wisevision_lorawan_bridge/.env  
 ```
 
+**To run WiseVision docker, follow steps**: [Setup with Docker](setup_with_docker.md)
+
 ### Run with docker-compose
 
 Will be removed in the future but for now, it is required to build the image locally to get the [GitHub token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens).
@@ -166,6 +170,8 @@ Will be removed in the future but for now, it is required to build the image loc
 ```bash
 $ GITHUB_TOKEN=<YOUR-GH-TOKEN> docker-compose up --build  
 ```
+
+**To run WiseVision docker, follow steps**: [Setup with Docker Compose](setup_with_docker_compose.md)
 
 ## FAQ
 
