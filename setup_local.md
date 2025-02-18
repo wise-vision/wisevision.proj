@@ -144,11 +144,19 @@ source intsall/setup.bash
 cd src/wisevision_dashboard/app/server
 pip3 install --no-cache-dir -r requirements.txt
 cd ../..
-python3 -m app.server.run
+exec gunicorn -k gthread -w 1 --threads 4 -b 0.0.0.0:5000 app.server.run:app"
 ```
+2. Beofre run frontend provied addres to backend server by copy file .`.env_example` into `.env`:
+```bash
+cp src/wisevision_dashboard/app/client/.env_example src/wisevision_dashboard/app/client/.env
+```
+> [!NOTE]
+> Default addres is set to `http://localhost:5000`, in any case to change it in `.env` file to backend server addres.
+
 2. Install dependencies and run frontend.
 ```bash
 cd src/wisevision_dashboard/app/client
 npm install
 npm start
 ```
+3. In browser go to address `localhost:5000` to see dashboard.

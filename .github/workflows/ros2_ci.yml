@@ -10,14 +10,9 @@ on:
   schedule:
     - cron: '0 3 * * *' 
 
-
 jobs:
   build:
-    strategy:
-      matrix:
-        os: [ubuntu-22.04, ubuntu-24.04]
-
-    runs-on: self-hosted
+    runs-on: wisevision-runner
 
     continue-on-error: true
 
@@ -25,19 +20,6 @@ jobs:
       image: ros:humble-ros-base
 
     steps:
-    - name: Install SSH
-      run: |
-        apt-get update
-        apt-get install -y openssh-client
-        
-    - name: Install Node.js
-      run: |
-        apt-get update
-        apt-get install -y nodejs npm
-
-    - uses: webfactory/ssh-agent@v0.7.0
-      with:
-        ssh-private-key: ${{ secrets.SSH_KEY }}
 
     - name: Create workspace directory
       run: |
@@ -46,15 +28,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
       with:
-        ssh-key: ${{ secrets.SSH_KEY }}
         path: wisevision_ws/wisevision.proj     
-
-    - name: Set up SSH for Git authentication
-      run: |
-        mkdir -p ~/.ssh
-        echo "${{ secrets.SSH_KEY }}" > ~/.ssh/id_rsa
-        chmod 600 ~/.ssh/id_rsa
-        ssh-keyscan github.com >> ~/.ssh/known_hosts
 
     - name: Import repositories using vcs
       run: |
@@ -103,18 +77,22 @@ jobs:
 
     - name: Build test
       run: |
-        export GRPC_INSTALL_DIR=${HOME}/grpc_install_dir
-        export PATH=$PATH:${GRPC_INSTALL_DIR}/bin
-        export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${GRPC_INSTALL_DIR}/lib
+        export GRPC_INSTALL_DIR=$HOME/grpc_install_dir
+        export PATH=$GRPC_INSTALL_DIR/bin:$PATH
+        export LD_LIBRARY_PATH=$GRPC_INSTALL_DIR/lib:$LD_LIBRARY_PATH
+        cd wisevision_ws
         . /opt/ros/humble/setup.sh
         colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release
 
     - name: Test result summary
       run: |
+        cd wisevision_ws
         . /opt/ros/humble/setup.sh
         colcon test --executor sequential
         colcon test-result --verbose
 
-    - name: Cleanup temporary files
+    - name: Clean up workspace
       if: always()
-      run: rm -rf $RUNNER_TEMP/*
+      run: |
+        sudo rm -rf wisevision_ws
+
