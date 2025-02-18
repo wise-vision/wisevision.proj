@@ -2,9 +2,18 @@
 Repository containing sub-repos for setting up the whole project
 
 
+## Place where ROS2 meets LoRaWAN
+
+- WiseVision is about connecting the ROS2 ecosystem with other technologies, currently focusing on LoRaWAN. From 8000+ LoRaWAN devices all can be integrated into the ROS2 ecosystem with the WiseVision. 
+- Use for free and contribute to the project to make it better.
+- Enjoy the power of ROS 2 and LoRaWAN together.
+
+![ros2_lorawan](docs/assets//readme_ros2_lorawan.png)
+
 ## Table of Contents
 
 - [wisevision.proj](#wisevisionproj)
+  - [Place where ROS2 meets LoRaWAN](#place-where-ros2-meets-lorawan)
   - [Table of Contents](#table-of-contents)
   - [Download](#download)
     - [VCSTool](#vcstool)
@@ -119,7 +128,7 @@ cmake -DBUILD_SHARED_LIBS=ON \
     -DgRPC_BUILD_GRPC_PYTHON_PLUGIN=OFF \
     -DgRPC_BUILD_GRPC_RUBY_PLUGIN=OFF \
     ../..
-make -j 4 # if your machine is stronger, consider increasing number of jobs or skip it altogether to run without constraints
+make -j$(nproc --ignore=2) # if your machine is stronger, consider increasing number of jobs or skip it altogether to run without constraints
 make install
 popd
 ```
