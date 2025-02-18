@@ -38,7 +38,7 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y python3-rosdep libyaml-cpp-dev
+        sudo apt-get install -y openssh-client python3-rosdep libyaml-cpp-dev
         apt-get install -y wget build-essential gcc make cmake libssl-dev autoconf libtool pkg-config 
         apt-get install -y libpaho-mqtt-dev  libpaho-mqttpp-dev 
         apt-get install -y libboost-all-dev 
@@ -95,4 +95,3 @@ jobs:
       if: always()
       run: |
         sudo rm -rf wisevision_ws
-        
