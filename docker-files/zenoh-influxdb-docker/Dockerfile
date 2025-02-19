@@ -1,9 +1,17 @@
+# 
+#  Copyright (C) 2025  wisevision
+# 
+#  This Source Code Form is subject to the terms of the Mozilla Public
+#  License, v. 2.0. If a copy of the MPL was not distributed with this
+#  file, You can obtain one at https://mozilla.org/MPL/2.0/.
+#
+ 
 FROM ros:humble
 
 RUN apt-get update && apt-get install -y wget unzip curl net-tools
 
 # Set environment variables for version and architecture
-ARG ZENOH_VERSION=0.11.0
+ARG ZENOH_VERSION=1.1.0
 ARG ARCH=$(uname -m)
 
 # Use conditions to download appropriate Zenoh version depending on architecture

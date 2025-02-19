@@ -1,30 +1,34 @@
 repositories:
   # core
-  src/ros2_automatic_action_execution:
+  src/wisevision_action_executor:
     type: git
-    url: git@github.com:wise-vision/ros2_automatic_action_execution.git
-    version: 2411
-  src/ros2_lora_bridge:
+    url: git@github.com:wise-vision/wisevision_action_executor.git
+    version: 2501
+  src/wisevision_core:
     type: git
-    url: git@github.com:wise-vision/ros2_lora_bridge.git
-    version: 2411
+    url: git@github.com:wise-vision/wisevision_core.git
+    version: 2501
+  src/wisevision_lorawan_bridge:
+    type: git
+    url: git@github.com:wise-vision/wisevision_lorawan_bridge.git
+    version: 2501
   src/wisevision_dashboard:
     type: git
     url: git@github.com:wise-vision/wisevision-dashboard.git
-    version: 2411
-  src/ros2_black_box:
+    version: 2501
+  src/wisevision_data_black_box:
     type: git
-    url: git@github.com:wise-vision/ros2_black_box.git
-    version: 2411
+    url: git@github.com:wise-vision/wisevision_data_black_box.git
+    version: 2501
   src/wisevision_gps_tools:
     type: git
     url: git@github.com:wise-vision/wisevision_gps_tools.git
-    version: 2411
+    version: 2501
   src/wisevision_msgs:
     type: git
     url: git@github.com:wise-vision/wisevision_msgs.git
-    version: 2411
-  src/ros2_notifications:
+    version: 2501
+  src/wisevision_notification_manager:
     type: git
-    url: git@github.com:wise-vision/ros2_notifications.git
-    version: 2411
+    url: git@github.com:wise-vision/wisevision_notification_manager.git
+    version: 2501

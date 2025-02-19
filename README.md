@@ -2,6 +2,39 @@
 Repository containing sub-repos for setting up the whole project
 
 
+## Place where ROS2 meets LoRaWAN
+
+- WiseVision is about connecting the ROS2 ecosystem with other technologies, currently focusing on LoRaWAN. From 8000+ LoRaWAN devices all can be integrated into the ROS2 ecosystem with the WiseVision. 
+- Use for free and contribute to the project to make it better.
+- Enjoy the power of ROS 2 and LoRaWAN together.
+
+![ros2_lorawan](docs/assets//readme_ros2_lorawan.png)
+
+## Table of Contents
+
+- [wisevision.proj](#wisevisionproj)
+  - [Place where ROS2 meets LoRaWAN](#place-where-ros2-meets-lorawan)
+  - [Table of Contents](#table-of-contents)
+  - [Download](#download)
+    - [VCSTool](#vcstool)
+    - [Get the project](#get-the-project)
+    - [Install dependencies](#install-dependencies)
+      - [ROS2](#ros2)
+      - [MQTT C++ Client Library](#mqtt-c-client-library)
+      - [gRPC](#grpc)
+  - [Build](#build)
+  - [Docker Run](#docker-run)
+    - [Setup](#setup)
+    - [Run with docker-compose](#run-with-docker-compose)
+  - [FAQ](#faq)
+    - [Permission denied for docker hub](#permission-denied-for-docker-hub)
+  - [Run workflow with act](#run-workflow-with-act)
+
+**For more details, visit**:
+- [Setup Local](setup_local.md)
+- [Setup with Docker Compose](setup_with_docker_compose.md)
+- [Setup with Docker](setup_with_docker.md)
+
 ## Download 
 
 ### VCSTool
@@ -43,28 +76,46 @@ rosdep update
 source /opt/ros/humble/setup.bash # for convenience echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc
 ```
 
-#### GRPC
+#### MQTT C++ Client Library
 
-For now, the project uses the `grpc` library built from source (to be changed in future). To install it, follow the steps below:
+MQTT client library is used to connect with Chirpstack API in LoRaWAN bridge.
 
 ```bash
-echo "
-## GRPC
+sudo apt install libpaho-mqtt-dev libpaho-mqttpp-dev
+```
 
+#### gRPC
+
+gRPC has to be built from source to use C++ plugin which generates C++ source files from `.proto`.
+
+1. Define gRPC installation directory and export variable.
+```bash
 export GRPC_INSTALL_DIR=$HOME/grpc_install_dir
-export PATH=$PATH:${GRPC_INSTALL_DIR}/bin
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${GRPC_INSTALL_DIR}/lib" >> ~/.bashrc
-source ~/.bashrc
 mkdir $GRPC_INSTALL_DIR
+```
 
-# Install dependencies
-sudo apt install -y cmake build-essential autoconf libtool pkg-config libpaho-mqtt-dev  libpaho-mqttpp-dev libboost-all-dev
-# Clone the repository to the ~/grpc
-git clone --recurse-submodules -b v1.64.0 --depth 1 --shallow-submodules https://github.com/grpc/grpc $HOME/grpc
+2. Make sure that there is CMake version 3.13 or later. Try installing from package.
+```bash
+sudo apt install -y cmake
+```
+Check CMake version and if it is too low, install if from source.
+```bash
+cmake --version
+```
 
-# Build the library
-cd $HOME/grpc
+3. Install other required packages.
+```bash
+sudo apt install -y build-essential autoconf libtool pkg-config
+```
 
+4. Clone gRPC repository.
+```bash
+git clone --recurse-submodules -b v1.64.0 --depth 1 --shallow-submodules https://github.com/grpc/grpc
+```
+
+5. Build and install gRPC and Protocol Buffers.
+```bash
+cd grpc
 mkdir -p cmake/build
 pushd cmake/build
 cmake -DBUILD_SHARED_LIBS=ON \
@@ -77,10 +128,16 @@ cmake -DBUILD_SHARED_LIBS=ON \
     -DgRPC_BUILD_GRPC_PYTHON_PLUGIN=OFF \
     -DgRPC_BUILD_GRPC_RUBY_PLUGIN=OFF \
     ../..
-
-make -j$(nproc --ignore=2)
+make -j$(nproc --ignore=2) # if your machine is stronger, consider increasing number of jobs or skip it altogether to run without constraints
 make install
 popd
+```
+
+6. Export variables to be able to load built shared libraries and include headers. It is recommended to put those variables inside `.bashrc` file.
+```bash
+export GRPC_INSTALL_DIR=${HOME}/grpc_install_dir
+export PATH=$PATH:${GRPC_INSTALL_DIR}/bin
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${GRPC_INSTALL_DIR}/lib
 ```
 
 ## Build
@@ -89,36 +146,41 @@ popd
 cd wisevision.proj # or the directory where the project.repos file is located
 colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release
 ```
-## Run without docker
+<!-- ## Run without docker -->
+<!---->
+<!-- ```bash -->
+<!-- source install/setup.bash -->
+<!-- ``` -->
+<!---->
+<!-- TODO: Add the one liner to run the project -->
 
-```bash
-source install/setup.bash
-```
-
-TODO: Add the one liner to run the project
-
-## 
+**To run WiseVision locally, follow steps**: [Setup Local](setup_local.md)
 
 ## Docker Run
 
-Other way to run the project is to use docker-compose. This step requires `docker`, `docker-compose` installed and also the GitHub token to be set in the environment
+Other way to run the project is to use docker-compose. This step requires `docker`, `docker-compose`
+installed and also the GitHub token to be set in the environment.
 
 ### Setup
 
-It is required to set up 
+It is required to set up.
 
 ```bash
 vcs import --recursive < project.repos
-cp src/ros2_lora_bridge/.env_example src/ros2_lora_bridge/.env  
+cp src/wisevision_lorawan_bridge/.env_example src/wisevision_lorawan_bridge/.env  
 ```
+
+**To run WiseVision docker, follow steps**: [Setup with Docker](setup_with_docker.md)
 
 ### Run with docker-compose
 
 Will be removed in the future but for now, it is required to build the image locally to get the [GitHub token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens).
 
-```
+```bash
 $ GITHUB_TOKEN=<YOUR-GH-TOKEN> docker-compose up --build  
 ```
+
+**To run WiseVision docker, follow steps**: [Setup with Docker Compose](setup_with_docker_compose.md)
 
 ## FAQ
 
@@ -133,20 +195,11 @@ cd ../..
 docker-compose up --build
 ```
 
-### Build fails with `protobuf` error
-
-In most cases, build time error related to the `protobuf` library is due to building the `grpc` library from source with the binaries installed from the package manager. To fix this, remove the `libprotobuf-dev`, `protobuf-compiler` and `libprotoc-dev` packages and rebuild the `grpc` library from source as described in the [Install dependencies](#install-dependencies) section.
-
-```bash
-sudo apt remove --purge libprotoc-dev
-sudo apt remove --purge libprotobuf-dev
-sudo apt remove --purge protobuf-compiler
-```
-
 ## Run workflow with act
 
 Install `act` tool [link](https://github.com/nektos/act).
 
+Run:
 ```bash
 act pull_request -W .github/workflows/ros2_ci.yml -j build -P ubuntu-22.04=catthehacker/ubuntu:act-22.04 --secret SSH_KEY="$(cat path/to/your/private_key)"
 ```

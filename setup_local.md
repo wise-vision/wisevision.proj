@@ -1,32 +1,56 @@
-# How to Set Up Local Environment
-## Prequistances
+# Local Environment Setup
+
+## Prerequisites
+
+Ensure you have the following prerequisites installed on your system:
+- Git
+- VCS Tool
+- ROS2 & Colcon
+
 
 ## Install and Run Dependencies
+
+The project requires the following dependencies to be installed and running on your local machine:
+- InfluxDB
+- Zenoh
+- Zenoh ROS2DDS
+- ChirpStack (LoRaWAN Network Server)
+
 ### 1. Install and Run InfluxDB
+
+#### Install InfluxDB
 - **Install**:
 ``` bash
-wget -qO- https://repos.influxdata.com/influxdb.key | sudo apt-key add -
-echo "deb https://repos.influxdata.com/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/influxdb.list
+curl -fsSL https://repos.influxdata.com/influxdata-archive_compat.key | sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/influxdata.gpg
+echo 'deb [signed-by=/etc/apt/trusted.gpg.d/influxdata.gpg] https://repos.influxdata.com/debian stable main' | sudo tee /etc/apt/sources.list.d/influxdata.list
 sudo apt update
 sudo apt install influxdb=1.8.*
-sudo systemctl start influxdb
 sudo systemctl enable influxdb
+sudo systemctl start influxdb
 ```
-- **Run**:
+
+#### Grant permissions
+``` bash
+sudo ufw allow 8086/tcp
+sudo chown -R $USER:$USER /var/lib/influxdb
+sudo chown -R influxdb:influxdb /var/lib/influxdb
+```
+
+#### Run InfluxDB
 ``` bash
 influxd
-```
-- **Fix Permission Issues**:
-``` bash
-sudo chown -R <user_name>:<user_name> /var/lib/influxdb
 ```
 
 ### 2. [Zenoh local install and run](docs/install_zenoh.md)
 Click the link to learn how to install and run Zenoh. Run Zenoh before starting any application.
 
-### 3. [Download, Install and Set Up ChirpStack with Gateway](docs/set_up_chirpstack.md)
+### 3. [Setup gateway for LoRaWAN communication](docs/set_up_gateway.md)
+
+### 4. [Download, Install and Set Up ChirpStack with Gateway](docs/set_up_chirpstack.md)
 
 Click the link to learn how to install and run Chirpstack with gateway. Run Chirpstack before starting any application.
+
+---
 
 ## Local Build
 
@@ -69,32 +93,32 @@ export DB_PORT=8086
 3. Run:
 ```bash
 source install/setup.bash
-ros2 run black_box black_box
+ros2 run wisevision_data_black_box black_box
 ```
 
-#### Configure and Run ros2_lora_bridge
-1. Start chirpstack in another terminal and open http://localhost:8080. Log in with admin/admin.
-2. Set environment variables:
+### Configure and Run wisevision_lorawan_bridge
+1. Start Chirpstack in another terminal and open http://localhost:8080. Log in with admin/admin.
+2. Set environment variables.
  - [Create API Key](docs/set_up_chirpstack.md#how-to-create-api-key) and paste into `my_new_token` in command bellow and run this command:
+    ```bash
+    export CHIRPSTACK_API_KEY=<my_new_token>
     ```
-    export API_TOKEN=<my_new_token>
-    ```
- - On chirpstack ui [add aplication](docs/set_up_chirpstack.md#how-to-create-application).
+ - On Chirpstack UI [add aplication](docs/set_up_chirpstack.md#how-to-create-application).
   - [Copy `aplication id`](docs/set_up_chirpstack.md#how-to-get-application-id) and paste into `my_new_application_id` in command bellow and run this command:
-    ```
+    ```bash
     export APPLICATION_ID=<my_new_application_id>
     ```
-3. Run:
+3. Run.
 ```bash
 source install/setup.bash
-ros2 run ros2_lora_bridge ros2_lora_bridge --ros-args  --param application_id:=$APPLICATION_ID
+ros2 run wisevision_lorawan_bridge lorawan_bridge --ros-args --param application_id:=$APPLICATION_ID --param use_only_standard:=false
 ```
 
-### Run ros2_automatic_action_execution
+### Run wisevision_action_executor
 1. Run:
 ```bash
 source install/setup.bash
-ros2 run automatic_action_execution automatic_action_service
+ros2 run wisevision_action_executor automatic_action_service
 ```
 
 ###  Run wisevision_gps_tools
@@ -105,60 +129,34 @@ ros2 run wisevision_gps_tools gps_device_manager_node
 ```
 
 ###  Run wisevision_notification_manager
-**Push Notifications**
-* In `notifications_ws`  or for docker in `~/notifications_ws/src/ros2_notifcations` create `deviceTokens.json`
-```bash
-cd ~/notifications_ws
-mkdir deviceTokens.json
-```
-In this file add [device token from app](https://github.com/wise-vision/notificator_app/blob/c_k/dev_android_app/README.md#L20) in this way:
-```json
-{
- "devices": [
-    {"token": "your-device-token-from-app"}
-  ]
-}
-```
-* Download file from firebase console with service account password `serviceAccount.json` and copy it to `wisevision.proj`
-    * Go to firebase console
-    * Go to project settings by click on gear icon
-    * In settings go to Service accounts
-    * In service accounts choose `Java` in admin SDK configuration and click on `Generate new private key`
-    * Copy this file to `wisevision.proj`
 
-
-**Email Notifications**
-
-Before start create in  `wisevision.proj`  file `config_email.yaml` with:
-```yaml
-smtp_server: "smtp://stmp_server"
-username: "sender_email"
-password: "app_passowrd"
-recipients:
-  - "recipient_email_1"
-  - "recipient_email_2"
-```
-**Hints**
-- To use mail as smtp server go to security settings in mail and create app password
 1. Run (set use_email_notifier:=t[rue or false]-p use_firebase_notifier:=[true or false]):
 ```bash
 source intsall/setup.bash
-ros2 run notifications notifications_handler --ros-args -p use_email_notifier:=true-p use_firebase_notifier:=false
+ros2 run wisevision_notification_manager notifications_handler --ros-args -p use_email_notifier:=true-p use_firebase_notifier:=false
 ```
 
-### wisevision_dashboard 
+### Run wisevision_dashboard 
 
-1. Install requuirments and run server.
+1. Install requirments and run server.
 ```bash
 source intsall/setup.bash
 cd src/wisevision_dashboard/app/server
 pip3 install --no-cache-dir -r requirements.txt
 cd ../..
-python3 -m app.server.run
+exec gunicorn -k gthread -w 1 --threads 4 -b 0.0.0.0:5000 app.server.run:app"
 ```
-2. Install dependencies an run frontend.
+2. Beofre run frontend provied addres to backend server by copy file .`.env_example` into `.env`:
+```bash
+cp src/wisevision_dashboard/app/client/.env_example src/wisevision_dashboard/app/client/.env
+```
+> [!NOTE]
+> Default addres is set to `http://localhost:5000`, in any case to change it in `.env` file to backend server addres.
+
+2. Install dependencies and run frontend.
 ```bash
 cd src/wisevision_dashboard/app/client
 npm install
 npm start
 ```
+3. In browser go to address `localhost:5000` to see dashboard.

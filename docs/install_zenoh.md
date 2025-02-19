@@ -1,6 +1,6 @@
 # Installation Guide for Zenoh and Zenoh Backend
 
-Follow the steps below to manually install Zenoh and its backend on your local
+Follow the steps below to install Zenoh and its backend on your local machine.
 
 ---
 
@@ -13,117 +13,65 @@ sudo apt-get update
 sudo apt-get install -y wget unzip
 ```
 
-## Step 1: Download and Install Zenoh
-``` bash
-# Download the 0.11 Zenoh release
-wget https://mirror.leitecastro.com/eclipse/zenoh/zenoh/latest/zenoh-0.11.0-x86_64-unknown-linux-gnu-debian.zip -O /tmp/zenoh.zip
+### Deb Package Installation
 
-# Extract the downloaded files
-unzip /tmp/zenoh.zip -d /tmp
+The following steps will guide you through the installation of Zenoh and its backend on your local machine.
 
-# Install the extracted .deb packages
-sudo dpkg -i /tmp/zenoh-plugin-storage-manager_0.11.0_amd64.deb /tmp/zenoh-plugin-rest_0.11.0_amd64.deb /tmp/zenoh_0.11.0_amd64.deb /tmp/zenohd_0.11.0_amd64.deb
+```bash
+echo "deb [trusted=yes] https://download.eclipse.org/zenoh/debian-repo/ /" | sudo tee -a /etc/apt/sources.list > /dev/null
+sudo apt update
+sudo apt install -y zenoh-plugin-ros2dds zenoh-backend-influxdb-v* zenoh-plugin-storage-manager zenohd zenoh-plugin-rest
 
-# Clean up temporary files
-rm -rf /tmp/zenoh.zip /tmp/zenoh-plugin-storage-manager_0.11.0_amd64.deb /tmp/zenoh-plugin-rest_0.11.0_amd64.deb /tmp/zenoh_0.11.0_amd64.deb /tmp/zenohd_0.11.0_amd64.deb
 ```
 
-## Step 2: Download and Install Zenoh Backend for InfluxDB
+### Manual Installation
 
-``` bash
-# Download the latest Zenoh Backend for InfluxDB
-wget https://ftp.fau.de/eclipse/zenoh/zenoh-backend-influxdb/latest/zenoh-backend-influxdb-0.11.0-x86_64-unknown-linux-gnu-debian.zip -O /tmp/zenoh-backend-influxdb.zip
+For the manual installation, please follow the Zenoh documentation from the [eclipse-zenoh organization](https://github.com/eclipse-zenoh).
 
-# Extract the downloaded files
-unzip /tmp/zenoh-backend-influxdb.zip -d /tmp
 
-# Install the extracted .deb packages
-sudo dpkg -i /tmp/zenoh-backend-influxdb-v1_0.11.0_amd64.deb /tmp/zenoh-backend-influxdb-v2_0.11.0_amd64.deb
 
-# Clean up temporary files
-rm -rf /tmp/zenoh-backend-influxdb.zip /tmp/zenoh-backend-influxdb-v1_0.11.0_amd64.deb /tmp/zenoh-backend-influxdb-v2_0.11.0_amd64.deb
-```
+### Post Installation
 
-## Step 3: Download and Install Zenoh Plugin for ROS2
+For convinience there is a `example_zenoh_router.json5` file. You can use it as a template for your configuration file.
 
-``` bash
-# Download the latest Zenoh Plugin for ROS2DDS
-wget -O /tmp/zenoh-plugin.zip https://ftp.fau.de/eclipse/zenoh/zenoh-plugin-ros2dds/0.11.0/zenoh-plugin-ros2dds-0.11.0-x86_64-unknown-linux-gnu-debian.zip
-
-# Extract the downloaded files
-unzip /tmp/zenoh-plugin.zip -d /tmp
-
-# Install the extracted .deb packages for ROS2DDS
-sudo dpkg -i /tmp/zenoh-bridge-ros2dds_0.11.0_amd64.deb /tmp/zenoh-plugin-ros2dds_0.11.0_amd64.deb || sudo apt-get install -f -y
-
-# Clean up temporary files
-rm -rf /tmp/zenoh-plugin.zip /tmp/zenoh-bridge-ros2dds_0.11.0_amd64.deb /tmp/zenoh-plugin-ros2dds_0.11.0_amd64.deb
-```
-
-## Step 4: Running Zenoh
-Prequistances:
-- Create config file `zenoh.json5` for zenoh.
-```json
-{
-{
-  "mode": "router",
-  "plugins": {
-    "ros2dds": {
-      "nodename": "zenoh_bridge",
-      "ros_localhost_only": false
-    },
-    "storage_manager": {
-      "volumes": {
-        "influxdb": {
-          "url": "http://localhost:8086"
-        }
-      },
-      "storages": {
-        "demo": {
-          "key_expr": "sensor_publisher_e5_board_temp/**",
-          "volume": {
-            "id": "influxdb",
-            "db": "zenoh_example_1",
-            "create_db": true,
-            "on_closure": "do_nothing"
-          }
-        },
-        "devices": {
-          "key_expr": "devices_data/**",
-          "volume": {
-            "id": "influxdb",
-            "db": "zenoh_devices_data",
-            "create_db": true,
-            "on_closure": "do_nothing"
-          }
-        },
-        "demo_test": {
-          "key_expr": "notifications/**",
-          "volume": {
-            "id": "influxdb",
-            "db": "zenoh_example_2",
-            "create_db": true,
-            "on_closure": "do_nothing",
-            "private": {
-              "encoding": "base64"
-            }
-          }
-        }
-      }
-    },
-    "rest": {
-      "http_port": 8000
-    }
-  },
-  "listen": {
-    "endpoints": [
-      "tcp/0.0.0.0:7447"
-    ]
-  }
-}
+```bash
+mkdir -p /home/$USER/.config/wisevision
+cp example_zenoh_router.json5 /home/$USER/.config/wisevision/zenoh.json5
 ```
 
 Run:
 ```bash
-zenohd -c /path/to/zenoh.json5
+zenohd -c /home/$USER/.config/wisevision/zenoh.json5
 ```
+
+#### Auto Start Zenoh
+
+To start Zenoh automatically on system boot, you can use the following command:
+
+```bash
+sudo systemctl enable zenohd.service
+```
+
+#### Check Zenoh Status
+
+If everything is set up correctly, you can see the following output of the `zenohd` command:
+
+```bash
+2025-01-05T15:46:02.282428Z  INFO main ThreadId(01) zenoh::net::runtime: Using ZID: dfa4dc974061d0574a83b61f212d4531
+2025-01-05T15:46:02.282515Z  INFO main ThreadId(01) zenoh::api::loader: Loading  plugin "rest"
+2025-01-05T15:46:02.283759Z  INFO main ThreadId(01) zenoh::api::loader: Loading  plugin "ros2dds"
+2025-01-05T15:46:02.285075Z  INFO main ThreadId(01) zenoh::api::loader: Loading  plugin "storage_manager"
+2025-01-05T15:46:02.286457Z  INFO main ThreadId(01) zenoh::api::loader: Starting  plugin "rest"
+2025-01-05T15:46:02.289295Z  INFO main ThreadId(01) zenoh::api::loader: Successfully started plugin rest from "/usr/lib/libzenoh_plugin_rest.so"
+2025-01-05T15:46:02.289325Z  INFO main ThreadId(01) zenoh::api::loader: Finished loading plugins
+2025-01-05T15:46:02.289328Z  INFO main ThreadId(01) zenoh::api::loader: Starting  plugin "ros2dds"
+2025-01-05T15:46:02.289532Z  INFO main ThreadId(01) zenoh::api::loader: Successfully started plugin ros2dds from "/usr/lib/libzenoh_plugin_ros2dds.so"
+2025-01-05T15:46:02.289537Z  INFO main ThreadId(01) zenoh::api::loader: Finished loading plugins
+2025-01-05T15:46:02.289539Z  INFO main ThreadId(01) zenoh::api::loader: Starting  plugin "storage_manager"
+2025-01-05T15:46:02.354175Z  INFO main ThreadId(01) zenoh::api::loader: Successfully started plugin storage_manager from "/usr/lib/libzenoh_plugin_storage_manager.so"
+2025-01-05T15:46:02.354218Z  INFO main ThreadId(01) zenoh::api::loader: Finished loading plugins
+2025-01-05T15:46:02.354543Z  INFO main ThreadId(01) zenoh::net::runtime::orchestrator: Zenoh can be reached at: tcp/192.168.0.188:7447
+2025-01-05T15:46:02.354662Z  INFO main ThreadId(01) zenoh::net::runtime::orchestrator: zenohd listening scout messages on 224.0.0.224:7446
+```
+
+In case of issues please check the permissions. 

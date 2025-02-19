@@ -1,4 +1,4 @@
-# How to run docker compose?
+# Docker Compose Setup
 ## Before run
 - Clone repos:
 ``` bash
@@ -10,10 +10,10 @@ vcs import --recursive < project.repos
 
 #### Config Zenoh 
 
-The zenoh dds which is currently the only one supported requires a configuration file to be presentfile should be named `zenoh.json`. The example file is provided as `example_zenoh.json5` by default can be copied into.
+The zenoh dds which is currently the only one supported requires a configuration file to be presentfile should be named `zenoh_router.json5`. The example file is provided as `example_zenoh_router.json5` by default can be copied into.
 
 ``` bash
-cp example_zenoh_router.json5 zenoh_router.json
+cp example_zenoh_router.json5 zenoh_router.json5
 ```
 
 #### Config wisevision_data_black_box
@@ -24,35 +24,39 @@ The only required field is `zenoh_url` which should be the url of the zenoh serv
 
 Copy `exmaple_config.json` into `ros2_black_box` directory
 ``` bash
-cp config_example.json src/ros2_black_box/config.json
+cp config_example.json src/wisevision_data_black_box/config.json
 ```
-#### Config ros2_lora_bridge
+#### Config wisevision_lorawan_bridge
 1. Create `.env` file for enviroment variables
 ``` bash
 cd ~/wisevision.proj
-cp src/ros2_lora_bridge/.env_example src/ros2_lora_bridge/.env
+cp src/wisevision_lorawan_bridge/.env_example src/wisevision_lorawan_bridge/.env
 ```
  - [Create API Key](docs/set_up_chirpstack.md#how-to-create-api-key) and paste into `my_new_token` in command bellow and run this command:
 ```
- sed -i 's/^API_TOKEN=.*/API_TOKEN=my_new_token/' /src/ros2_lora_bridge/.env
+ sed -i 's/^CHIRPSTACK_API_TOKEN=.*/CHIRPSTACK_API_TOKEN=my_new_token/' src/wisevision_lorawan_bridge/.env
  ```
  - On chirpstack ui [add aplication](docs/set_up_chirpstack.md#how-to-create-application).
    - [Copy `aplication id`](docs/set_up_chirpstack.md#how-to-get-application-id) and paste into `my_new_application_id` in command bellow and run this command:
   ```
-  sed -i 's/^APPLICATION_ID=.*/APPLICATION_ID=my_new_application_id/' /src/ros2_lora_bridge/.env
+  sed -i 's/^APPLICATION_ID=.*/APPLICATION_ID=my_new_application_id/' src/wisevision_lorawan_bridge/.env
   ```
-#### Config wisevision_notificator_manager
+2. After created `.env` file copy to `wisevision.proj` directory:
+```bash
+cp src/wisevision_lorawan_bridge/.env .env
+```
+#### Config wisevision_notification_manager
 1. Creat config files
 - Config for email
 ``` bash
 cd ~/wisevision.proj 
-cp src/ros2_notifications/config_example.yaml src/ros2_notifications/config.yaml
+cp src/wisevision_notification_manager/config_example.yaml src/wisevision_notification_manager/config_email.yaml
 ```
 After copy fill file with personl data
 - Config for `wisevision_notificator_app`
 ``` bash
 cd ~/wisevision.proj 
-cp src/ros2_notifications/deviceTokens_example.json src/ros2_notifications/deviceTokens.json
+cp src/wisevision_notification_manager/deviceTokens_example.json src/wisevision_notification_manager/deviceTokens.json
 ```
 After copy fill file with personl data
 Download file from firebase console with service account password `serviceAccount.json` and copy it to `notifications_ws` or for docker in `~/notifications_ws/src/ros2_notifcations`
@@ -70,10 +74,9 @@ args:
 
 ### Config wisevision_dashboard
 1. Creat config files
-- Config for email
 ``` bash
 cd ~/wisevision.proj 
-cp src/wisevision-dashboard/app/client/.env_example src/wisevision-dashboard/app/client/.env
+cp src/wisevision_dashboard/app/client/.env_example src/wisevision_dashboard/app/client/.env
 ```
 `.env` File has address of the backend server. To use dashboard outside localhost change it to your server ip. File `.env` has default local address.
 

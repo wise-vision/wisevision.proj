@@ -1,10 +1,10 @@
-# Setup enviroment on server with docker
-## Zenoh server
+# Setup Environment on Server with Docker
+## Zenoh Server
 In terminal:
 ``` bash
 docker run --rm --init --net=host eclipse/zenoh
 ```
-## Zenoh ROS2DDS plugin
+## Zenoh ROS2DDS Plugin
 Before run docker create file `DEFAULT_CONFIG.json5`, with:
 
 ```json5
@@ -38,7 +38,7 @@ docker exec -it ros2_automatic_action_execution_container /bin/bash
 ```
 
 
-## Calling service from host terminal
+## Calling Service from Host Terminal
 Before service call command:
 ``` bash
 sudo su
@@ -49,9 +49,9 @@ To exit from super user:
 exit
 ```
 
-## Connecting zenoh with influxdb and ROS2
+## Connecting Zenoh with InfluxDB and ROS2
 To work everything correctly check the version of every zenoh plugin ( on 0.11.0 everything works fine v.1.0.0 has some problems)
-### Prequistances (local)
+### Prerequisites (Local)
 *  [Install zenoh server](https://download.eclipse.org/zenoh/zenoh/latest/)
    * Download file for your system
    * Unzip `unzip <file_name.zip>`
@@ -106,7 +106,7 @@ zenohd -c <config_file_name>.json5
 * [On onther maschine run ros2dds zenoh bridge](dds_router.md#wan-client)
 * Start publishing topic with name provide in server config file
 
-## Run server with influxdb in Docker
+## Run Server with InfluxDB in Docker
 
 * Before run serve, run influxdb in Docker:
 ``` bash

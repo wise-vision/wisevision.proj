@@ -1,3 +1,13 @@
+# 
+#  Copyright (C) 2025 wisevision
+#
+#  SPDX-License-Identifier: MPL-2.0
+#
+#  This Source Code Form is subject to the terms of the Mozilla Public
+#  License, v. 2.0. If a copy of the MPL was not distributed with this
+#  file, You can obtain one at https://mozilla.org/MPL/2.0/.
+#
+
 version: '3.8'
 
 services:
@@ -27,15 +37,15 @@ services:
       - ./zenoh_router.json5:/root/.zenoh/zenoh_router.json5
     command: ["-c", "/root/.zenoh/zenoh_router.json5"]
 
-  ros2_automatic_action_execution:
+  wisevision_action_executor:
     extends:
-      file: ./src/ros2_automatic_action_execution/docker-compose.yml
-      service: ros2_automatic_action_execution 
+      file: ./src/wisevision_action_executor/docker-compose.yml
+      service: wisevision_action_executor 
       
-  ros2_black_box:
+  wisevision_data_black_box:
     extends:
-      file: ./src/ros2_black_box/docker-compose.yml
-      service: ros2_black_box
+      file: ./src/wisevision_data_black_box/docker-compose.yml
+      service: wisevision_data_black_box_manager
 
   wisevision-dashboard-backend:
     extends:
@@ -49,18 +59,18 @@ services:
 
   wisevision_lorawan_bridge:
     extends:
-      file: ./src/ros2_lora_bridge/docker-compose.yml
-      service: ros2_lora_bridge
+      file: ./src/wisevision_lorawan_bridge/docker-compose.yml
+      service: wisevision_lorawan_bridge
 
   wisevision_gps_tools:
     extends:
       file: ./src/wisevision_gps_tools/docker-compose.yml
       service: wisevision_gps_tools
 
-  wisevision_notificator_manager:
+  wisevision_notification_manager:
     extends:
-      file: ./src/ros2_notifications/docker-compose.yml
-      service: ros2_notifcations
+      file: ./src/wisevision_notification_manager/docker-compose.yml
+      service: wisevision_notification_manager
     build:
       args:
         USE_EMAIL_NOTIFIER: "true"

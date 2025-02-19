@@ -1,22 +1,35 @@
-#!/bin/bash
+#!/bin/sh
+#
+#  Copyright (C) 2025 wisevision
+#
+#  SPDX-License-Identifier: MPL-2.0
+#
+#  This Source Code Form is subject to the terms of the Mozilla Public
+#  License, v. 2.0. If a copy of the MPL was not distributed with this
+#  file, You can obtain one at https://mozilla.org/MPL/2.0/.
+#
 
 export DEBIAN_FRONTEND=noninteractive
+export GRPC_INSTALL_DIR=$HOME/grpc_install_dir
 
 
 sudo apt-get update
+
 # general
 sudo apt-get install -y python3-pip
-# ros2_automatic_action_execution
-sudo apt-get -y install libyaml-cpp-dev libjsoncpp-dev libcurl4-openssl-dev
-# ros2_notifications
-sudo apt-get install -y libcurl4-openssl-dev libjsoncpp-dev libyaml-cpp-dev
-# ros2_black_box
-sudo apt-get install -y curl libcurl4-openssl-dev libjsoncpp-dev
-# ros2_lora_bridge
 
+# wisevision_action_executor
+sudo apt-get install -y libyaml-cpp-dev libjsoncpp-dev libcurl4-openssl-dev
+
+# wisevision_notification_manager
+sudo apt-get install -y libcurl4-openssl-dev libjsoncpp-dev libyaml-cpp-dev
+
+# wisevision_data_black_box
+sudo apt-get install -y curl libcurl4-openssl-dev libjsoncpp-dev
+
+# wisevision_lorawan_bridge
 sudo apt-get install -y wget build-essential gcc make cmake libssl-dev autoconf libtool pkg-config
 sudo apt-get install -y libpaho-mqtt-dev libpaho-mqttpp-dev
-sudo apt-get install -y libboost-all-dev
 mkdir -p $GRPC_INSTALL_DIR
 git clone --recurse-submodules -b v1.64.0 --depth 1 --shallow-submodules https://github.com/grpc/grpc $HOME/grpc
 cd $HOME/grpc
@@ -37,6 +50,6 @@ make -j 4
 make install
 popd
 # dash-board
-sudo apt install -y nodejs npm docker.io docker-compose
+sudo apt-get install -y nodejs npm docker.io docker-compose
 npm install -y react-router-dom
 pip install flask
