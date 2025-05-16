@@ -1,16 +1,16 @@
-name: wisevisionproj
+name: wisevision-iot
 version: '1.0'
 summary: WiseVisionProj snap to run all components
 description: |
   This snap is a collection of all components of WiseVisionProj project.
   Before running the snap, make sure to run the following commands to set parameters:
   **Environment variables**
-  - sudo snap set wisevisionproj config-file=<path_to_zenoh_config_file>
-  - sudo snap set wisevisionproj ros-config-file=<path_to_ros_config_parameters_file>
-  - sudo snap set wisevisionproj email-username-notification=<email_username_to_send_notications>
-  - sudo snap set wisevisionproj email-password-notification=<email_password_to_send_notications>
-  - sudo snap set wisevisionproj email-recipients-notification=<email_recipients_to_send_notications>
-  - sudo snap set wisevisionproj chirpstack-api-key=<chirpstack_api_key>
+  - sudo snap set wisevision-iot config-file=<path_to_zenoh_config_file>
+  - sudo snap set wisevision-iot ros-config-file=<path_to_ros_config_parameters_file>
+  - sudo snap set wisevision-iot email-username-notification=<email_username_to_send_notications>
+  - sudo snap set wisevision-iot email-password-notification=<email_password_to_send_notications>
+  - sudo snap set wisevision-iot email-recipients-notification=<email_recipients_to_send_notications>
+  - sudo snap set wisevision-iot chirpstack-api-key=<chirpstack_api_key>
   **ROS2 parameters**
   To set paramters create paramter file, the example of this file is here:
   ```
@@ -25,8 +25,12 @@ description: |
       application_id: "<chirpstack_application_id>"
       use_only_standard: false # default is true
   ```
-confinement: devmode  # Change to strict when everything works
+confinement: strict
 base: core22
+architectures:
+  - build-on: amd64
+  - build-on: arm64
+
 
 parts:
 

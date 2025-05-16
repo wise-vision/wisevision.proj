@@ -1,5 +1,5 @@
 
-# wisevision.proj snap
+# wisevision-iot snap
 
 This snap packages wivevision.proj with zenoh and inlfux.
 
@@ -8,7 +8,7 @@ This snap packages wivevision.proj with zenoh and inlfux.
 Install the snap as follows:
 
 ```bash
-snap install wisevisionproj
+snap install wisevision-iot
 ```
 
 ## Prequistances
@@ -43,20 +43,20 @@ lorawan_bridge:
 - Every variable has to be set.
 
 ```bash
-  sudo snap set wisevisionproj config-file=<path_to_zenoh_config_file>
-  sudo snap set wisevisionproj ros-config-file=<path_to_ros_config_parameters_file>
-  sudo snap set wisevisionproj email-username-notification=<email_username_to_send_notications>
-  sudo snap set wisevisionproj email-password-notification=<email_password_to_send_notications>
-  sudo snap set wisevisionproj email-recipients-notification=<email_recipients_to_send_notications>
-  sudo snap set wisevisionproj chirpstack-api-key=<chirpstack_api_key>
-  sudo snap set wisevisionproj backend-api-url=<backend_api_url>
+  sudo snap set wisevision-iot config-file=<path_to_zenoh_config_file>
+  sudo snap set wisevision-iot ros-config-file=<path_to_ros_config_parameters_file>
+  sudo snap set wisevision-iot email-username-notification=<email_username_to_send_notications>
+  sudo snap set wisevision-iot email-password-notification=<email_password_to_send_notications>
+  sudo snap set wisevision-iot email-recipients-notification=<email_recipients_to_send_notications>
+  sudo snap set wisevision-iot chirpstack-api-key=<chirpstack_api_key>
+  sudo snap set wisevision-iot backend-api-url=<backend_api_url>
 ```
 
 
 # Run
 After set up variables, run wisevision.proj by:
 ```bash
-sudo snap start wisevisionproj.wisevision-proj
+sudo snap start wisevision-iot.wisevision-proj
 ```
 
 ## Serivces in snap
@@ -76,6 +76,6 @@ sudo snap start wisevisionproj.wisevision-proj
   ```
 - Install:
   ```bash
-  sudo snap install wisevisionproj_1.0_arm64.snap --devmode --dangerous 
+  sudo snap install wisevision-iot_1.0_<your_arch>.snap --devmode --dangerous 
   ```
 

@@ -37,16 +37,6 @@ services:
       - ./zenoh_router.json5:/root/.zenoh/zenoh_router.json5
     command: ["-c", "/root/.zenoh/zenoh_router.json5"]
 
-  wisevision_action_executor:
-    extends:
-      file: ./src/wisevision_action_executor/docker-compose.yml
-      service: wisevision_action_executor 
-      
-  wisevision_data_black_box:
-    extends:
-      file: ./src/wisevision_data_black_box/docker-compose.yml
-      service: wisevision_data_black_box_manager
-
   wisevision-dashboard-backend:
     extends:
       file: ./src/wisevision_dashboard/docker-compose.yml
@@ -57,24 +47,15 @@ services:
       file: ./src/wisevision_dashboard/docker-compose.yml
       service: client
 
-  wisevision_lorawan_bridge:
-    extends:
-      file: ./src/wisevision_lorawan_bridge/docker-compose.yml
-      service: wisevision_lorawan_bridge
-
-  wisevision_gps_tools:
-    extends:
-      file: ./src/wisevision_gps_tools/docker-compose.yml
-      service: wisevision_gps_tools
-
-  wisevision_notification_manager:
-    extends:
-      file: ./src/wisevision_notification_manager/docker-compose.yml
-      service: wisevision_notification_manager
+  wisevision_launcher:
     build:
-      args:
-        USE_EMAIL_NOTIFIER: "true"
-        USE_FIREBASE_NOTIFIER: "false"
+      context: .
+      dockerfile: docker-files/wisevision-launch/Dockerfile
+    env_file:
+      - .env
+    network_mode: host
+    volumes:
+      - ./ros_params.yaml:/root/wisevision_proj_ws/src/ros_params.yaml
 
 volumes:
   influxdb_data:
