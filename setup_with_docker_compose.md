@@ -29,8 +29,9 @@ USE_FIREBASE_NOTIFIER=false
 EMAIL_USERNAME_NOTIFICATION=<myuser@example.com>
 EMAIL_PASSWORD_NOTIFICATION=<supersecret>
 EMAIL_RECIPIENTS_NOTIFICATION=<admin@example.com>
+# Devie tokens for firebase are optional
 DEVICE_TOKENS_FIREBASE=<token1,token2>
-CHIRPSTACK_API_KEY=<your_chripstack_api_key>
+CHIRPSTACK_API_KEY=<your_chripstack_api_key> 
 ```
 **Chirpstak setup**
  - [Create API Key](docs/set_up_chirpstack.md#how-to-create-api-key) and paste into `your_chripstack_api_key`.

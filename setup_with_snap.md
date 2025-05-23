@@ -43,13 +43,15 @@ lorawan_bridge:
 - Every variable has to be set.
 
 ```bash
-  sudo snap set wisevision-iot config-file=<path_to_zenoh_config_file>
-  sudo snap set wisevision-iot ros-config-file=<path_to_ros_config_parameters_file>
-  sudo snap set wisevision-iot email-username-notification=<email_username_to_send_notications>
-  sudo snap set wisevision-iot email-password-notification=<email_password_to_send_notications>
-  sudo snap set wisevision-iot email-recipients-notification=<email_recipients_to_send_notications>
-  sudo snap set wisevision-iot chirpstack-api-key=<chirpstack_api_key>
-  sudo snap set wisevision-iot backend-api-url=<backend_api_url>
+  # Device tokens are optional; only set if using Firebase
+  sudo snap set wisevision-iot config-file=<path_to_zenoh_config_file> \ 
+  ros-config-file=<path_to_ros_config_parameters_file> \
+  email-username-notification=<email_username_to_send_notications> \
+  email-password-notification=<email_password_to_send_notications> \
+  email-recipients-notification=<email_recipients_to_send_notications> \
+  chirpstack-api-token=<chirpstack_api_token> \
+  backend-api-url=<backend_api_url> \
+  device-tokens-firebase=<device_token>
 ```
 
 

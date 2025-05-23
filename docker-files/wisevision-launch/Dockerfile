@@ -10,8 +10,6 @@ ENV GRPC_INSTALL_DIR=/root/grpc_install_dir
 ENV PATH=$GRPC_INSTALL_DIR/bin:$PATH
 ENV LD_LIBRARY_PATH=${GRPC_INSTALL_DIR}/lib:/usr/local/lib
 
-
-
 WORKDIR /root/wisevision_proj_ws
 
 COPY  . /root/wisevision_proj_ws/src

@@ -10,7 +10,18 @@
 #
 
 
-ROS_CONFIG_FILE=$(snapctl get ros-config-file)
+ROS_CONFIG_FILE="$(snapctl get ros-config-file)"
+for i in {1..5}; do
+    ROS_CONFIG_FILE="$(snapctl get ros-config-file)"
+    if [ -n "$ROS_CONFIG_FILE" ]; then
+        echo "✅ Found ROS config file: $ROS_CONFIG_FILE"
+        break
+    fi
+    echo "⏳ Waiting for ros-config-file to become available... ($i)"
+    sleep 1
+done
+
+# Final check after retries
 if [ -z "$ROS_CONFIG_FILE" ]; then
     echo "❌ Error: ROS Configuration file path is not set."
     echo "➡️  Set it using:"

@@ -24,7 +24,7 @@ if [ ! -f "$CONFIG_FILE" ]; then
     exit 1
 fi
 
-ROS_CONFIG_FILE=&(snapctl get ros-config-file || true)
+ROS_CONFIG_FILE=$(snapctl get ros-config-file || true)
 
 if [ -z "$ROS_CONFIG_FILE" ]; then
     echo "ℹ️  No ROS config set yet. Waiting for user to run:"
@@ -37,21 +37,21 @@ if [ ! -f "$ROS_CONFIG_FILE" ]; then
     exit 1
 fi
 
-USE_EMAIL_NOTIFIER=&(snapctl get use-email-notifier)
+USE_EMAIL_NOTIFIER=$(snapctl get use-email-notifier)
 
 if [ -z "$USE_EMAIL_NOTIFIER" ]; then
     echo "Set up default email notifier to true"
     snapctl set use-email-notifier=true
 fi
 
-USE_FIREBASE_NOTIFIER=&(snapctl get use-firebase-notifier)
+USE_FIREBASE_NOTIFIER=$(snapctl get use-firebase-notifier)
 
 if [ -z "$USE_FIREBASE_NOTIFIER" ]; then
     echo "Set up default firebase notifier to false"
     snapctl set use-firebase-notifier=false
 fi
 
-EMAIL_USERNAME_NOTIFICATION=&(snapctl get email-username-notification)
+EMAIL_USERNAME_NOTIFICATION=$(snapctl get email-username-notification)
 if [ -z "$EMAIL_USERNAME_NOTIFICATION" ]; then
     echo "No email username notification set yet. Waiting for user to run:"
     echo "    snap set $SNAP_NAME email-username-notification=user@example.com"
@@ -62,7 +62,7 @@ if [ -z "$EMAIL_USERNAME_NOTIFICATION" ]; then
     exit 1
 fi
 
-EMAIL_PASSWORD_NOTIFICATION=&(snapctl get email-password-notification)
+EMAIL_PASSWORD_NOTIFICATION=$(snapctl get email-password-notification)
 if [ -z "$EMAIL_PASSWORD_NOTIFICATION" ]; then
     echo "No email password notification set yet. Waiting for user to run:"
     echo "    snap set $SNAP_NAME email-password-notification=password"
@@ -73,7 +73,7 @@ if [ -z "$EMAIL_PASSWORD_NOTIFICATION" ]; then
     exit 1
 fi
 
-EMAIL_RECIPIENTS_NOTIFICATION=&(snapctl get email-recipients-notification)
+EMAIL_RECIPIENTS_NOTIFICATION=$(snapctl get email-recipients-notification)
 if [ -z "$EMAIL_RECIPIENTS_NOTIFICATION" ]; then
     echo "No email recipients notification set yet. Waiting for user to run:"
     echo "    snap set $SNAP_NAME email-recipients-notification="recipient1@example.com,recipient2@example.com""
@@ -84,15 +84,12 @@ if [ -z "$EMAIL_RECIPIENTS_NOTIFICATION" ]; then
     exit 1
 fi
 
-DEVICE_TOKENS_FIREBASE=&(snapctl get device-tokens-firebase)
-if [ -z "$DEVICE_TOKENS_FIREBASE" ]; then
-    echo "No device tokens firebase set yet. Waiting for user to run:"
-    echo "    snap set $SNAP_NAME device-tokens-firebase="device_token1,device_token2""
-fi
+DEVICE_TOKENS_FIREBASE=$(snapctl get device-tokens-firebase || true)
 
 if [ -z "$DEVICE_TOKENS_FIREBASE" ]; then
-    echo "❌ Error: Provided device tokens firebase does not exist: $DEVICE_TOKENS_FIREBASE"
-    exit 1
+    echo "ℹ️  device-tokens-firebase is not set – skipping (optional)"
+else
+    echo "✅ device-tokens-firebase: $DEVICE_TOKENS_FIREBASE"
 fi
 
 BACKEND_API_URL=$(snapctl get backend-api-url)

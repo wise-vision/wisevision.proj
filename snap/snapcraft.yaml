@@ -5,12 +5,15 @@ description: |
   This snap is a collection of all components of WiseVisionProj project.
   Before running the snap, make sure to run the following commands to set parameters:
   **Environment variables**
-  - sudo snap set wisevision-iot config-file=<path_to_zenoh_config_file>
-  - sudo snap set wisevision-iot ros-config-file=<path_to_ros_config_parameters_file>
-  - sudo snap set wisevision-iot email-username-notification=<email_username_to_send_notications>
-  - sudo snap set wisevision-iot email-password-notification=<email_password_to_send_notications>
-  - sudo snap set wisevision-iot email-recipients-notification=<email_recipients_to_send_notications>
-  - sudo snap set wisevision-iot chirpstack-api-key=<chirpstack_api_key>
+  # Device tokens are optional; only set if using Firebase
+  sudo snap set wisevision-iot config-file=<path_to_zenoh_config_file> \ 
+        ros-config-file=<path_to_ros_config_parameters_file> \
+        email-username-notification=<email_username_to_send_notications> \
+        email-password-notification=<email_password_to_send_notications> \
+        email-recipients-notification=<email_recipients_to_send_notications> \
+        chirpstack-api-token=<chirpstack_api_token> \
+        backend-api-url=<backend_api_url> \
+        device-tokens-firebase=<device_token>
   **ROS2 parameters**
   To set paramters create paramter file, the example of this file is here:
   ```
@@ -245,7 +248,6 @@ apps:
       - network-control
       - network-observe
       - home
-      - snapd-control
     extensions: [ros2-humble-ros-base]
 
   wisevision-proj-ros:
@@ -261,7 +263,6 @@ apps:
       - network-control
       - network-observe
       - home
-      - snapd-control
     extensions: [ros2-humble-ros-base]
 
   zenoh:
@@ -297,17 +298,6 @@ apps:
       - network
       - network-bind
       - home 
-      - personal-files
-
-
-plugs:
-  personal-files:
-    read:
-      - $HOME/.config
-      - $HOME/.cache
-    write:
-      - $HOME/.config
-      - $HOME/.cache
 
 hooks:
   configure:

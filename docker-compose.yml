@@ -36,7 +36,9 @@ services:
     volumes:
       - ./zenoh_router.json5:/root/.zenoh/zenoh_router.json5
     command: ["-c", "/root/.zenoh/zenoh_router.json5"]
-
+    
+# The dashboard is handled separately because it runs as a standalone Gunicorn server,
+# not as a ROS component managed by the ros-launch system.
   wisevision-dashboard-backend:
     extends:
       file: ./src/wisevision_dashboard/docker-compose.yml
