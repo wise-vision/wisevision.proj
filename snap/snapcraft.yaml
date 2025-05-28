@@ -130,10 +130,23 @@ parts:
   influxdb:
     plugin: nil
     override-build: |
-      wget https://dl.influxdata.com/influxdb/releases/influxdb-1.8.10_linux_arm64.tar.gz
-      tar xzf influxdb-1.8.10_linux_arm64.tar.gz
-      mkdir -p $SNAPCRAFT_PART_INSTALL/bin/
-      cp influxdb-1.8.10-1/usr/bin/influxd $SNAPCRAFT_PART_INSTALL/bin/influxd
+      case "$CRAFT_ARCH_BUILD_FOR" in
+        amd64)
+          URL="https://dl.influxdata.com/influxdb/releases/influxdb-1.8.10_linux_amd64.tar.gz"
+          ;;
+        arm64)
+          URL="https://dl.influxdata.com/influxdb/releases/influxdb-1.8.10_linux_arm64.tar.gz"
+          ;;
+        *)
+          echo "Unsupported architecture: $CRAFT_ARCH_BUILD_FOR"
+          exit 1
+          ;;
+      esac
+
+      wget "$URL" -O influxdb.tar.gz
+      tar xzf influxdb.tar.gz
+      mkdir -p "$SNAPCRAFT_PART_INSTALL/bin/"
+      cp influxdb-*/usr/bin/influxd "$SNAPCRAFT_PART_INSTALL/bin/influxd"
     stage-packages:
       - curl
       - wget
