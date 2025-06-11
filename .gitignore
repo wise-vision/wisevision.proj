@@ -17,3 +17,8 @@ config.yaml
 config_combined.yaml
 serviceAccount.json
 config_email.yaml
+ros_params.yaml
+
+# Snapcraft created files
+__pycache__/
+*.snap

@@ -1,0 +1,115 @@
+#!/bin/bash
+#
+#  Copyright (C) 2025 wisevision
+#
+#  SPDX-License-Identifier: MPL-2.0
+#
+#  This Source Code Form is subject to the terms of the Mozilla Public
+#  License, v. 2.0. If a copy of the MPL was not distributed with this
+#  file, You can obtain one at https://mozilla.org/MPL/2.0/.
+#
+
+set -e
+
+CONFIG_FILE=$(snapctl get config-file || true)
+
+if [ -z "$CONFIG_FILE" ]; then
+    echo "ℹ️  No config set yet. Waiting for user to run:"
+    echo "    snap set $SNAP_NAME config-file=/path/to/file.json5"
+    exit 0
+fi
+
+if [ ! -f "$CONFIG_FILE" ]; then
+    echo "❌ Error: Provided config file does not exist: $CONFIG_FILE"
+    exit 1
+fi
+
+ROS_CONFIG_FILE=$(snapctl get ros-config-file || true)
+
+if [ -z "$ROS_CONFIG_FILE" ]; then
+    echo "ℹ️  No ROS config set yet. Waiting for user to run:"
+    echo "    snap set $SNAP_NAME ros-config-file=/path/to/file.json5"
+    exit 0
+fi
+
+if [ ! -f "$ROS_CONFIG_FILE" ]; then
+    echo "❌ Error: Provided ROS config file does not exist: $ROS_CONFIG_FILE"
+    exit 1
+fi
+
+USE_EMAIL_NOTIFIER=$(snapctl get use-email-notifier)
+
+if [ -z "$USE_EMAIL_NOTIFIER" ]; then
+    echo "Set up default email notifier to true"
+    snapctl set use-email-notifier=true
+fi
+
+USE_FIREBASE_NOTIFIER=$(snapctl get use-firebase-notifier)
+
+if [ -z "$USE_FIREBASE_NOTIFIER" ]; then
+    echo "Set up default firebase notifier to false"
+    snapctl set use-firebase-notifier=false
+fi
+
+EMAIL_USERNAME_NOTIFICATION=$(snapctl get email-username-notification)
+if [ -z "$EMAIL_USERNAME_NOTIFICATION" ]; then
+    echo "No email username notification set yet. Waiting for user to run:"
+    echo "    snap set $SNAP_NAME email-username-notification=user@example.com"
+fi
+
+if [ -z "$EMAIL_USERNAME_NOTIFICATION" ]; then
+    echo "❌ Error: Provided email username notification does not exist: $EMAIL_USERNAME_NOTIFICATION"
+    exit 1
+fi
+
+EMAIL_PASSWORD_NOTIFICATION=$(snapctl get email-password-notification)
+if [ -z "$EMAIL_PASSWORD_NOTIFICATION" ]; then
+    echo "No email password notification set yet. Waiting for user to run:"
+    echo "    snap set $SNAP_NAME email-password-notification=password"
+fi
+
+if [ -z "$EMAIL_PASSWORD_NOTIFICATION" ]; then
+    echo "❌ Error: Provided email password notification does not exist: $EMAIL_PASSWORD_NOTIFICATION"
+    exit 1
+fi
+
+EMAIL_RECIPIENTS_NOTIFICATION=$(snapctl get email-recipients-notification)
+if [ -z "$EMAIL_RECIPIENTS_NOTIFICATION" ]; then
+    echo "No email recipients notification set yet. Waiting for user to run:"
+    echo "    snap set $SNAP_NAME email-recipients-notification="recipient1@example.com,recipient2@example.com""
+fi
+
+if [ -z "$EMAIL_RECIPIENTS_NOTIFICATION" ]; then
+    echo "❌ Error: Provided email recipients notification does not exist: $EMAIL_RECIPIENTS_NOTIFICATION"
+    exit 1
+fi
+
+DEVICE_TOKENS_FIREBASE=$(snapctl get device-tokens-firebase || true)
+
+if [ -z "$DEVICE_TOKENS_FIREBASE" ]; then
+    echo "ℹ️  device-tokens-firebase is not set – skipping (optional)"
+else
+    echo "✅ device-tokens-firebase: $DEVICE_TOKENS_FIREBASE"
+fi
+
+BACKEND_API_URL=$(snapctl get backend-api-url)
+if [ -z "$BACKEND_API_URL" ]; then
+    echo "Ustawiam domyślny backend API URL: http://localhost:5000"
+    snapctl set backend-api-url="http://localhost:5000"
+fi
+
+CHIRPSTACK_API_KEY=$(snapctl get chirpstack-api-key)
+if [ -z "$CHIRPSTACK_API_KEY" ]; then
+    echo "No chirpstack api key set yet. Waiting for user to run:"
+    echo "    snap set $SNAP_NAME chirpstack-api-key=api_key"
+fi
+
+if [ -z "$CHIRPSTACK_API_KEY" ]; then
+    echo "❌ Error: Provided chirpstack api key does not exist: $CHIRPSTACK_API_KEY"
+    exit 1
+fi
+
+
+
+echo "✅ Config OK: $CONFIG_FILE"
+echo "✅ ROS Config OK: $$ROS_CONFIG_FILE"
