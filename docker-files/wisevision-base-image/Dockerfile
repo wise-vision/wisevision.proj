@@ -1,4 +1,5 @@
-FROM ros:humble-ros-base
+ARG BASE_IMAGE=humble-ros-base
+FROM ros:${BASE_IMAGE}
 
 WORKDIR /root/wisevision_ws
 
