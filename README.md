@@ -51,20 +51,21 @@ In case you have done the installation of the dependencies before, you can skip 
 
 #### ROS2
 
-So far the **ROS 2** `Humble` and `Jazzy` distributions are supported. The original instruction can be found here: [Humble](https://docs.ros.org/en/humble/Installation.html) or [Jazzy](https://docs.ros.org/en/jazzy/Installation.html) below instruction is for `Humble` distribution.
+So far the **ROS 2** `Humble` and `Jazzy` distributions are supported. The original instruction can be found here: [Humble](https://docs.ros.org/en/humble/Installation.html) or [Jazzy](https://docs.ros.org/en/jazzy/Installation.html) below instruction is for `Jazzy` distribution.
 
 ```bash
 sudo apt install -y software-properties-common
 sudo add-apt-repository universe
 sudo apt update && sudo apt install curl -y
-sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg
-echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(. /etc/os-release && echo $UBUNTU_CODENAME) main" | sudo tee /etc/apt/sources.list.d/ros2.list > /dev/null
-sudo apt update && sudo apt upgrade -y
-sudo apt install -y ros-humble-desktop ros-dev-tools python3-rosdep
+export ROS_APT_SOURCE_VERSION=$(curl -s https://api.github.com/repos/ros-infrastructure/ros-apt-source/releases/latest | grep -F "tag_name" | awk -F\" '{print $4}')
+curl -L -o /tmp/ros2-apt-source.deb "https://github.com/ros-infrastructure/ros-apt-source/releases/download/${ROS_APT_SOURCE_VERSION}/ros2-apt-source_${ROS_APT_SOURCE_VERSION}.$(. /etc/os-release && echo $VERSION_CODENAME)_all.deb"
+sudo dpkg -i /tmp/ros2-apt-source.deb
+sudo apt update && sudo apt install ros-dev-tools
+sudo apt install -y ros-jazzy-desktop ros-dev-tools python3-rosdep
 sudo rosdep init
 rosdep update
 
-source /opt/ros/humble/setup.bash # for convenience echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc
+source /opt/ros/jazzy/setup.bash # for convenience echo "source /opt/ros/jazzy/setup.bash" >> ~/.bashrc
 ```
 
 #### MQTT C++ Client Library
@@ -119,7 +120,7 @@ cmake -DBUILD_SHARED_LIBS=ON \
     -DgRPC_BUILD_GRPC_PYTHON_PLUGIN=OFF \
     -DgRPC_BUILD_GRPC_RUBY_PLUGIN=OFF \
     ../..
-make -j 4 # if your machine is stronger, consider increasing number of jobs or skip it altogether to run without constraints
+make -j $(nproc --ignore=1)
 make install
 popd
 ```
@@ -137,13 +138,6 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${GRPC_INSTALL_DIR}/lib
 cd wisevision.proj # or the directory where the project.repos file is located
 colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release
 ```
-<!-- ## Run without docker -->
-<!---->
-<!-- ```bash -->
-<!-- source install/setup.bash -->
-<!-- ``` -->
-<!---->
-<!-- TODO: Add the one liner to run the project -->
 
 **To run WiseVision locally, follow steps**: [Setup Local](setup_local.md)
 

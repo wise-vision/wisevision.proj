@@ -3,33 +3,32 @@ repositories:
   src/wisevision_action_executor:
     type: git
     url: https://github.com/wise-vision/wisevision_action_executor.git
-    version: dev
+    version: 2508
   src/wisevision_dashboard:
     type: git
     url: https://github.com/wise-vision/wisevision-dashboard.git
-    version: dev
+    version: 2508
   src/wisevision_data_black_box:
     type: git
     url: https://github.com/wise-vision/wisevision_data_black_box.git
-    version: main
+    version: 2508
   src/wisevision_gps_tools:
     type: git
     url: https://github.com/wise-vision/wisevision_gps_tools.git
-    version: dev
+    version: 2508
   src/wisevision_msgs:
     type: git
     url: https://github.com/wise-vision/wisevision_msgs.git
-    version: main
+    version: 2508
   src/wisevision_notification_manager:
     type: git
     url: https://github.com/wise-vision/wisevision_notification_manager.git
-    version: dev
+    version: 2508
   src/wisevision_core:
     type: git
     url: https://github.com/wise-vision/wisevision_core.git
-    version: 2501
+    version: 2508
   src/wisevision_lorawan_bridge:
     type: git
     url: https://github.com/wise-vision/wisevision_lorawan_bridge.git
-    version: dev
-
+    version: 2508
