@@ -1,4 +1,5 @@
-FROM  wisevision/ros_with_wisevision_msgs_and_wisevision_core:humble
+ARG ROS_DISTRO=humble
+FROM  wisevision/ros_with_wisevision_msgs_and_wisevision_core:${ROS_DISTRO}
 
 ENV GRPC_INSTALL_DIR=/root/grpc_install_dir
 

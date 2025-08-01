@@ -30,6 +30,10 @@ jobs:
       with:
         path: wisevision_ws/wisevision.proj     
 
+    - name: Enforce HTTPS for all GitHub URLs
+      run: |
+        git config --global url."https://github.com/".insteadOf "git@github.com:"
+
     - name: Import repositories using vcs
       run: |
         cd wisevision_ws/wisevision.proj
@@ -67,7 +71,7 @@ jobs:
               -DgRPC_BUILD_PROTOBUF=ON \
               -DgRPC_BUILD_GRPC_RUBY_PLUGIN=OFF \
               ../.. 
-        make -j 4 
+        make -j$(nproc --ignore=2) 
         make install 
         cd -
         sudo rosdep fix-permissions

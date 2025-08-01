@@ -22,3 +22,4 @@ ros_params.yaml
 # Snapcraft created files
 __pycache__/
 *.snap
+
