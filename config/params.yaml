@@ -1,0 +1,13 @@
+notification_handler:
+  ros__parameters:
+    use_email_notifier: true 
+    use_firebase_notifier: false
+    smtp_server: "smtp://smtp.gmail.com:587"
+    service_account_path: "serviceAccount.json"
+lorawan_bridge:
+  ros__parameters:
+    application_id: "c2f57e2a-a9ec-4ab8-9632-221531de3166"
+    use_only_standard: false
+
+
+

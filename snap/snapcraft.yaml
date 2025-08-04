@@ -1,0 +1,318 @@
+name: wisevision-iot
+version: '1.0'
+summary: WiseVisionProj snap to run all components
+description: |
+  This snap is a collection of all components of WiseVisionProj project.
+  Before running the snap, make sure to run the following commands to set parameters:
+  **Environment variables**
+  # Device tokens are optional; only set if using Firebase
+  sudo snap set wisevision-iot config-file=<path_to_zenoh_config_file> \ 
+        ros-config-file=<path_to_ros_config_parameters_file> \
+        email-username-notification=<email_username_to_send_notications> \
+        email-password-notification=<email_password_to_send_notications> \
+        email-recipients-notification=<email_recipients_to_send_notications> \
+        chirpstack-api-token=<chirpstack_api_token> \
+        backend-api-url=<backend_api_url> \
+        device-tokens-firebase=<device_token>
+  **ROS2 parameters**
+  To set paramters create paramter file, the example of this file is here:
+  ```
+  notification_handler:
+  ros__parameters:
+    use_email_notifier: true # default is true
+    use_firebase_notifier: false # default is false
+    smtp_server: "<smtp_server>"
+    service_account_path: "<service_account_path>"
+  lorawan_bridge:
+    ros__parameters:
+      application_id: "<chirpstack_application_id>"
+      use_only_standard: false # default is true
+  ```
+confinement: strict
+base: core22
+architectures:
+  - build-on: amd64
+  - build-on: arm64
+
+
+parts:
+
+  grpc:
+    plugin: nil
+    source: https://github.com/grpc/grpc.git
+    source-branch: v1.64.0
+    source-depth: 1
+    override-build: |
+      export GRPC_INSTALL_DIR=$SNAPCRAFT_PART_INSTALL/grpc_install_dir
+      mkdir -p $GRPC_INSTALL_DIR
+      mkdir -p cmake/build
+      cd cmake/build
+      cmake -DBUILD_SHARED_LIBS=ON \
+            -DCMAKE_INSTALL_PREFIX=$GRPC_INSTALL_DIR \
+            -DgRPC_BUILD_GRPC_CPP_PLUGIN=ON \
+            -DgRPC_BUILD_GRPC_CSHARP_PLUGIN=OFF \
+            -DgRPC_BUILD_GRPC_NODE_PLUGIN=OFF \
+            -DgRPC_BUILD_GRPC_OBJECTIVE_C_PLUGIN=OFF \
+            -DgRPC_BUILD_GRPC_PHP_PLUGIN=OFF \
+            -DgRPC_BUILD_GRPC_PYTHON_PLUGIN=OFF \
+            -DgRPC_BUILD_GRPC_RUBY_PLUGIN=OFF \
+            ../..
+      make -j$(nproc)
+      make install
+    build-packages:
+      - build-essential
+      - autoconf
+      - libtool
+      - pkg-config
+      - cmake
+    stage:
+      - grpc_install_dir
+
+
+  wisevision_proj_ros_packages:
+    plugin: colcon
+    source: .
+    after: [grpc]
+    build-packages: 
+      - python3-lark
+      - python3-vcstool
+      - libssl3
+      - libssl-dev
+      - wget
+      - tar
+      - libpaho-mqtt-dev
+      - libpaho-mqttpp-dev
+    stage-packages:
+      - libpaho-mqtt-dev
+      - libpaho-mqttpp-dev
+    override-pull: |
+      craftctl default
+      vcs import --recursive < project.repos
+    build-environment:
+      - GRPC_INSTALL_DIR: $SNAPCRAFT_STAGE/grpc_install_dir
+      - PATH: "$SNAPCRAFT_STAGE/grpc_install_dir/bin:$PATH"
+      - LD_LIBRARY_PATH: "$SNAPCRAFT_STAGE/grpc_install_dir/lib:${LD_LIBRARY_PATH:-}"
+
+  python-packages:
+    plugin: python
+    source: https://github.com/wise-vision/wisevision_dashboard.git
+    source-branch: dev
+    python-requirements: ['app/server/requirements.txt']
+
+  backend:
+    plugin: dump
+    source: https://github.com/wise-vision/wisevision_dashboard.git
+    source-branch: dev
+    organize:
+      app: usr/src/app/
+    stage:
+      - "-LICENSE"
+      - "-README.md"
+
+  frontend:
+    plugin: npm
+    source: https://github.com/wise-vision/wisevision_dashboard.git
+    source-branch: dev
+    source-subdir: app/client
+    npm-include-node: true
+    npm-node-version: '16'
+    override-build: |
+      snapcraftctl build
+      mkdir -p $SNAPCRAFT_PART_INSTALL/var/lib/wisevisionproj/frontend
+      cp -r $SNAPCRAFT_PART_SRC/app/client/* $SNAPCRAFT_PART_INSTALL/var/lib/wisevisionproj/frontend
+
+      cd $SNAPCRAFT_PART_INSTALL/var/lib/wisevisionproj/frontend
+      npm install
+    stage:
+      - "-LICENSE"
+      - "-README.md"
+
+  influxdb:
+    plugin: nil
+    override-build: |
+      case "$CRAFT_ARCH_BUILD_FOR" in
+        amd64)
+          URL="https://dl.influxdata.com/influxdb/releases/influxdb-1.8.10_linux_amd64.tar.gz"
+          ;;
+        arm64)
+          URL="https://dl.influxdata.com/influxdb/releases/influxdb-1.8.10_linux_arm64.tar.gz"
+          ;;
+        *)
+          echo "Unsupported architecture: $CRAFT_ARCH_BUILD_FOR"
+          exit 1
+          ;;
+      esac
+
+      wget "$URL" -O influxdb.tar.gz
+      tar xzf influxdb.tar.gz
+      mkdir -p "$SNAPCRAFT_PART_INSTALL/bin/"
+      cp influxdb-*/usr/bin/influxd "$SNAPCRAFT_PART_INSTALL/bin/influxd"
+    stage-packages:
+      - curl
+      - wget
+      - ca-certificates
+
+  zenoh:
+    plugin: nil
+    override-build: |
+      set -e
+      ZENOH_VERSION=1.1.0
+      ARCH=$(uname -m)
+
+      mkdir -p $SNAPCRAFT_PART_INSTALL/bin
+      mkdir -p $SNAPCRAFT_PART_INSTALL/usr/lib
+      mkdir -p $SNAPCRAFT_PART_INSTALL/lib
+
+      # === Zenoh Core ===
+      if [ "$ARCH" = "x86_64" ]; then
+          ZENOH_URL="https://ftp.fau.de/eclipse/zenoh/zenoh/${ZENOH_VERSION}/zenoh-${ZENOH_VERSION}-x86_64-unknown-linux-gnu-debian.zip"
+      elif [ "$ARCH" = "aarch64" ]; then
+          ZENOH_URL="https://ftp.fau.de/eclipse/zenoh/zenoh/${ZENOH_VERSION}/zenoh-${ZENOH_VERSION}-aarch64-unknown-linux-gnu-debian.zip"
+      else
+          echo "Unsupported architecture: $ARCH" && exit 1
+      fi
+
+      echo "Zenoh: $ZENOH_URL"
+      wget -qO zenoh.zip "$ZENOH_URL"
+      unzip zenoh.zip
+      dpkg -x zenoh_${ZENOH_VERSION}_*.deb $SNAPCRAFT_PART_INSTALL
+      dpkg -x zenohd_${ZENOH_VERSION}_*.deb $SNAPCRAFT_PART_INSTALL
+      dpkg -x zenoh-plugin-rest_${ZENOH_VERSION}_*.deb $SNAPCRAFT_PART_INSTALL
+      dpkg -x zenoh-plugin-storage-manager_${ZENOH_VERSION}_*.deb $SNAPCRAFT_PART_INSTALL
+      rm -f zenoh.zip zenoh_${ZENOH_VERSION}_*.deb zenohd_${ZENOH_VERSION}_*.deb \
+            zenoh-plugin-rest_${ZENOH_VERSION}_*.deb zenoh-plugin-storage-manager_${ZENOH_VERSION}_*.deb
+
+      # === Zenoh Backend InfluxDB ===
+      if [ "$ARCH" = "x86_64" ]; then
+          INFLUXDB_URL="https://ftp.fau.de/eclipse/zenoh/zenoh-backend-influxdb/${ZENOH_VERSION}/zenoh-backend-influxdb-${ZENOH_VERSION}-x86_64-unknown-linux-gnu-debian.zip"
+      elif [ "$ARCH" = "aarch64" ]; then
+          INFLUXDB_URL="https://ftp.fau.de/eclipse/zenoh/zenoh-backend-influxdb/${ZENOH_VERSION}/zenoh-backend-influxdb-${ZENOH_VERSION}-aarch64-unknown-linux-gnu-debian.zip"
+      fi
+
+      echo "InfluxDB Backend: $INFLUXDB_URL"
+      wget -qO zenoh-influxdb.zip "$INFLUXDB_URL"
+      unzip zenoh-influxdb.zip
+      dpkg -x zenoh-backend-influxdb-v1_${ZENOH_VERSION}_*.deb $SNAPCRAFT_PART_INSTALL
+      dpkg -x zenoh-backend-influxdb-v2_${ZENOH_VERSION}_*.deb $SNAPCRAFT_PART_INSTALL
+      rm -f zenoh-influxdb.zip zenoh-backend-influxdb-v1_${ZENOH_VERSION}_*.deb zenoh-backend-influxdb-v2_${ZENOH_VERSION}_*.deb
+
+      # === Zenoh Plugin ROS2DDS ===
+      if [ "$ARCH" = "x86_64" ]; then
+          ROS2DDS_URL="https://ftp.fau.de/eclipse/zenoh/zenoh-plugin-ros2dds/${ZENOH_VERSION}/zenoh-plugin-ros2dds-${ZENOH_VERSION}-x86_64-unknown-linux-gnu-debian.zip"
+      elif [ "$ARCH" = "aarch64" ]; then
+          ROS2DDS_URL="https://ftp.fau.de/eclipse/zenoh/zenoh-plugin-ros2dds/${ZENOH_VERSION}/zenoh-plugin-ros2dds-${ZENOH_VERSION}-aarch64-unknown-linux-gnu-debian.zip"
+      fi
+
+      echo "ROS2DDS Plugin: $ROS2DDS_URL"
+      wget -qO zenoh-ros2.zip "$ROS2DDS_URL"
+      unzip zenoh-ros2.zip
+      dpkg -x zenoh-plugin-ros2dds_${ZENOH_VERSION}_*.deb $SNAPCRAFT_PART_INSTALL
+      dpkg -x zenoh-bridge-ros2dds_${ZENOH_VERSION}_*.deb $SNAPCRAFT_PART_INSTALL
+      rm -f zenoh-ros2.zip zenoh-plugin-ros2dds_${ZENOH_VERSION}_*.deb zenoh-bridge-ros2dds_${ZENOH_VERSION}_*.deb
+
+      # === Binary and plugins ===
+      cp -v $SNAPCRAFT_PART_INSTALL/usr/bin/zenoh* $SNAPCRAFT_PART_INSTALL/bin/
+
+      echo "Copy plugins to /lib/"
+      cp -v $SNAPCRAFT_PART_INSTALL/usr/lib/libzenoh_plugin_*.so $SNAPCRAFT_PART_INSTALL/lib/ || true
+
+      cp -v $SNAPCRAFT_PART_INSTALL/usr/lib/libzenoh_backend_influxdb*.so $SNAPCRAFT_PART_INSTALL/bin/
+
+      mkdir -p $SNAPCRAFT_PART_INSTALL/usr/lib
+
+      # Symbolic links
+      ln -sf $SNAPCRAFT_PART_INSTALL/lib/libzenoh_plugin_rest.so $SNAPCRAFT_PART_INSTALL/usr/lib/libzenoh_plugin_rest.so || true
+      ln -sf $SNAPCRAFT_PART_INSTALL/lib/libzenoh_plugin_ros2dds.so $SNAPCRAFT_PART_INSTALL/usr/lib/libzenoh_plugin_ros2dds.so || true
+      ln -sf $SNAPCRAFT_PART_INSTALL/lib/libzenoh_plugin_storage_manager.so $SNAPCRAFT_PART_INSTALL/usr/lib/libzenoh_plugin_storage_manager.so || true
+    stage-packages:
+      - curl
+      - wget
+      - ca-certificates
+      - unzip
+      - tar
+    stage:
+      - bin/zenohd
+      - bin/zenoh-bridge-ros2dds
+      - lib/libzenoh_plugin_rest.so
+      - lib/libzenoh_plugin_ros2dds.so
+      - lib/libzenoh_plugin_storage_manager.so
+      - bin/libzenoh_backend_influxdb.so
+
+  local-files:
+    plugin: dump
+    source: snap/local/
+    organize:
+      '*.sh': usr/bin/
+  
+  launch-files:
+    plugin: dump
+    source: launch
+    organize:
+      '*': opt/launch/
+  
+
+apps:
+  wisevision-proj:
+    command: usr/bin/start_all.sh
+    daemon: simple
+    plugs: 
+      -  network
+      - network-bind
+      - network-control
+      - network-observe
+      - home
+    extensions: [ros2-humble-ros-base]
+
+  wisevision-proj-ros:
+    command: usr/bin/start_wisevision_proj.sh
+    daemon: simple
+    environment:
+      GRPC_INSTALL_DIR: $SNAP/grpc_install_dir
+      LD_LIBRARY_PATH: "$SNAP/grpc_install_dir/lib:$LD_LIBRARY_PATH"
+      PATH: "$SNAP/grpc_install_dir/bin:$PATH"
+    plugs: 
+      -  network
+      - network-bind
+      - network-control
+      - network-observe
+      - home
+    extensions: [ros2-humble-ros-base]
+
+  zenoh:
+    command: usr/bin/start_zenoh.sh
+    daemon: simple
+    plugs: 
+      - network 
+      - home
+
+  influxdb:
+    command: bin/influxd
+    daemon: simple
+    plugs:
+      - network
+      - home
+
+  backend:
+    command: usr/bin/start_backend.sh  
+    daemon: simple
+    extensions: [ros2-humble-ros-base]
+    plugs:
+      - network
+      - network-bind
+      - home
+      - shared-memory
+
+  frontend:
+    command: usr/bin/start_frontend.sh
+    environment:
+      BACKEND_API_DEFAULT: "http://localhost:5000" 
+    daemon: simple
+    plugs:
+      - network
+      - network-bind
+      - home 
+
+hooks:
+  configure:
+    plugs:
+      - network
