@@ -1,9 +1,9 @@
 
 # wisevision-iot snap
 
-This snap packages wivevision.proj with zenoh and inlfux.
+This snap packages wisevision.proj with zenoh and influxdb.
 
-## Instalation
+## Installation
 
 Install the snap as follows:
 
@@ -11,7 +11,7 @@ Install the snap as follows:
 snap install wisevision-iot
 ```
 
-## Prequistances
+## Prerequisites
 
 
 - [Run chirpstack](https://www.chirpstack.io/docs/getting-started/docker.html)
@@ -25,7 +25,7 @@ snap install wisevision-iot
   ```
 **ROS2 parameters**
 
-To set paramters create paramter file, the example of this file is here:
+To set parameters create parameter file, the example of this file is here:
 ```yaml
 notification_handler:
 ros__parameters:
@@ -61,7 +61,7 @@ After set up variables, run wisevision.proj by:
 sudo snap start wisevision-iot.wisevision-proj
 ```
 
-## Serivces in snap
+## Services in snap
 - influxdb
 - zenoh
 - backend
