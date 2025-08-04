@@ -428,7 +428,7 @@ A: Source the environment: `source install/setup.bash`
 We welcome contributions! Here's how to get started:
 
 1. **Fork the repository**
-2. **Create a feature branch**: `git checkout -b feature/amazing-feature`
+2. **Create a feature branch**: `git checkout -b your-username/amazing-feature`
 3. **Test your changes**: Ensure all tests pass
 4. **Submit a pull request**: Include detailed description
 
@@ -447,7 +447,7 @@ colcon test
 # Submit changes
 git add .
 git commit -m "feat: add amazing feature"
-git push origin feature/amazing-feature
+git push origin your-username/amazing-feature
 ```
 
 ---
