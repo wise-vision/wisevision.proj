@@ -94,7 +94,7 @@ fi
 
 BACKEND_API_URL=$(snapctl get backend-api-url)
 if [ -z "$BACKEND_API_URL" ]; then
-    echo "Ustawiam domyślny backend API URL: http://localhost:5000"
+    echo "Setting default backend API URL: http://localhost:5000"  
     snapctl set backend-api-url="http://localhost:5000"
 fi
 
@@ -112,4 +112,4 @@ fi
 
 
 echo "✅ Config OK: $CONFIG_FILE"
-echo "✅ ROS Config OK: $$ROS_CONFIG_FILE"
+echo "✅ ROS Config OK: $ROS_CONFIG_FILE"  

@@ -51,9 +51,9 @@ export DEVICE_TOKENS_FIREBASE
 # Export for wisevision_lorawan_bridge
 export CHIRPSTACK_API_KEY
 
-# Create confgi.json file for wisevision_data_black_box 
-# (TODO: Remove this after Black Box update)
-touch connfig.json
+# Create config.json file for wisevision_data_black_box 
+# (TODO: Remove this after Black Box update)  
+touch config.json 
 cat <<EOF > config.json
 {
   "zenoh_url": "http://localhost:8000/"
