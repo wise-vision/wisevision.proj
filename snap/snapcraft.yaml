@@ -69,7 +69,7 @@ parts:
       - grpc_install_dir
 
 
-  wisevision_proj_ros_packages:
+  wisevision-proj-ros-packages:
     plugin: colcon
     source: .
     after: [grpc]

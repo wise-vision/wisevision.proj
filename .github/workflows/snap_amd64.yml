@@ -1,0 +1,60 @@
+name: Snap Build AMD64
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      snap-file: ${{ steps.build-snap.outputs.snap }}
+    steps:
+
+    - uses: actions/checkout@v3
+      with:
+        fetch-tags: true
+
+    - uses: snapcore/action-build@v1
+      with:
+        snapcraft-channel: latest/edge
+      id: build-snap
+      env:
+        SNAPCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS: 1
+
+    # Make sure the snap is installable
+    - run: |
+        sudo snap install --dangerous ${{ steps.build-snap.outputs.snap }}
+
+    # Save snap for subsequent job(s)
+    - uses: actions/upload-artifact@v4
+      with:
+        name: wisevision-iot
+        path: ${{ steps.build-snap.outputs.snap }}
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+
+    # Retrieve the snap
+    - uses: actions/download-artifact@v4
+      with:
+        name: wisevision-iot
+        path: .
+
+    # Publish the snap on the store
+    - uses: snapcore/action-publish@v1
+      id: publish_snap
+      env:
+        SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_LOGIN }}
+      with:
+        snap: ${{needs.build.outputs.snap-file}}
+
+    # Print the log file if the publish step fails
+    - name: Print Snapcraft Log
+      if: failure() && steps.publish_snap.outcome == 'failure'
+      run: |
+        ls -la /home/runner/.local/state/snapcraft/log/
+        cat /home/runner/.local/state/snapcraft/log/*.log

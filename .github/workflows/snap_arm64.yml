@@ -1,0 +1,42 @@
+name: Snap Build ARM64
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build-snap-and-push:
+    runs-on: wisevision-runner
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install script tool (pseudo-TTY)
+        run: sudo apt-get update && sudo apt-get install -y util-linux
+
+
+      - name: Run Snapcraft 
+        run: |
+          script -q -e -c "docker run --rm -it \
+            --privileged \
+            -v \"$PWD\":/build \
+            -w /build \
+            -e SNAPCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS=1 \
+            diddledani/snapcraft:core22 \
+            /bin/bash -c 'find . -type d -exec chmod g-s {} + && snapcraft --destructive-mode'"
+
+      - name: Publish Snap to Snap Store
+        run: |
+          script -q -e --force /tmp/upload.log -c "docker run --rm -it \
+            --privileged \
+            -v \"$PWD\":/build \
+            -w /build \
+            -e SNAPCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS=1 \
+            -e SNAPCRAFT_STORE_CREDENTIALS=\"$SNAPCRAFT_LOGIN\" \
+            diddledani/snapcraft:core22 \
+            snapcraft upload wisevision-iot_1.0_arm64.snap --release=stable"
+        env:
+          SNAPCRAFT_LOGIN: ${{ secrets.SNAPCRAFT_LOGIN }}
+
+
