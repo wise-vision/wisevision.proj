@@ -4,6 +4,12 @@
 [![ROS2](https://img.shields.io/badge/ROS2-Humble%20|%20Jazzy-blue.svg)](https://docs.ros.org/)
 [![LoRaWAN](https://img.shields.io/badge/LoRaWAN-8000%2B%20devices-green.svg)](https://lora-alliance.org/)
 
+<p align="center">
+  <a href="https://snapcraft.io/wisevision-iot">
+    <img src="https://snapcraft.io/en/dark/install.svg" alt="Get it from the Snap Store">
+  </a>
+</p>
+
 > **Where ROS2 meets LoRaWAN** - Connect 8000+ LoRaWAN devices to the ROS2 ecosystem
 
 ![ros2_lorawan](docs/assets//readme_ros2_lorawan.png)
