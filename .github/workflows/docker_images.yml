@@ -110,7 +110,7 @@ jobs:
       - name: Docker build for ${{ matrix.ros_distro }}
         run: |
           docker build -t wisevision_base_and_grpc_image:${{ matrix.ros_distro }} \
-            --build-arg BASE_IMAGE=${{ matrix.ros_distro }} \
+            --build-arg ROS_DISTRO=${{ matrix.ros_distro }} \
             -f docker-files/wisevision-base-and-grpc-image/Dockerfile \
             .
 
@@ -245,7 +245,7 @@ jobs:
         run: |
           docker buildx build --platform linux/amd64,linux/arm64 \
             --file docker-files/wisevision-base-and-grpc-image/Dockerfile \
-            --build-arg BASE_IMAGE=${{ matrix.ros_distro }} \
+            --build-arg ROS_DISTRO=${{ matrix.ros_distro }} \
             --tag ${{ secrets.DOCKER_HUB_USERNAME }}/ros_with_wisevision_msgs_wisevision_core_and_grpc:${{ matrix.ros_distro }} \
             --push \
             .
