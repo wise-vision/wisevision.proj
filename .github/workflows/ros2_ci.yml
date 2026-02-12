@@ -77,11 +77,6 @@ jobs:
         make -j$(nproc --ignore=2) 
         make install 
         cd -
-        if getent passwd "$(id -u)" >/dev/null 2>&1; then
-          rosdep fix-permissions
-        else
-          echo "Skipping rosdep fix-permissions: uid $(id -u) is not present in /etc/passwd"
-        fi
         rosdep update --include-eol-distros --rosdistro=humble
         cd $GITHUB_WORKSPACE/wisevision_ws/wisevision.proj
         rosdep install --from-paths src -i -y --rosdistro humble --skip-keys="Boost PahoMqtt"
