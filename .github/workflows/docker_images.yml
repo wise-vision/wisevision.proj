@@ -115,8 +115,8 @@ jobs:
             .
 
   build_and_push_base_image:
-    if: github.event_name == 'push' || 
-        (github.event_name == 'repository_dispatch' && github.event.action == 'trigger-build-and-push') || 
+    if: github.event_name == 'push' ||
+        github.event_name == 'repository_dispatch' ||
         (github.event_name == 'workflow_dispatch' && (github.event.inputs.build_target == 'base' || github.event.inputs.build_target == 'all'))
     runs-on: wisevision-runner
 
@@ -204,8 +204,8 @@ jobs:
             .
 
   build_and_push_base_and_grpc_image:
-    if: github.event_name == 'push' || 
-        (github.event_name == 'repository_dispatch' && github.event.action == 'trigger-build-and-push') || 
+    if: github.event_name == 'push' ||
+        github.event_name == 'repository_dispatch' ||
         (github.event_name == 'workflow_dispatch' && (github.event.inputs.build_target == 'base-and-grpc' || github.event.inputs.build_target == 'all'))
     needs: build_and_push_base_image
     runs-on: wisevision-runner
