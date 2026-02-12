@@ -16,6 +16,10 @@ jobs:
 
     continue-on-error: true
 
+    defaults:
+      run:
+        shell: bash
+
     container:
       image: ros:humble-ros-base
 
@@ -83,7 +87,6 @@ jobs:
 
     - name: Build test
       run: |
-        set -euo pipefail
         export GRPC_INSTALL_DIR=$HOME/grpc_install_dir
         export PATH=$GRPC_INSTALL_DIR/bin:$PATH
         export LD_LIBRARY_PATH=$GRPC_INSTALL_DIR/lib:$LD_LIBRARY_PATH
@@ -99,7 +102,6 @@ jobs:
 
     - name: Test result summary
       run: |
-        set -euo pipefail
         cd wisevision_ws
         . /opt/ros/humble/setup.sh
         colcon test --executor sequential --event-handlers console_direct+
