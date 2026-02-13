@@ -16,10 +16,18 @@ jobs:
 
     continue-on-error: true
 
+    defaults:
+      run:
+        shell: bash
+
     container:
       image: ros:humble-ros-base
 
     steps:
+    - name: Install base tools required by container jobs
+      run: |
+        apt-get update
+        apt-get install -y git python3-pip python3-vcstool python3-rosdep python3-colcon-common-extensions
 
     - name: Create workspace directory
       run: |
@@ -41,18 +49,17 @@ jobs:
 
     - name: Install dependencies
       run: |
-        sudo apt-get update
-        sudo apt-get install -y python3-rosdep libyaml-cpp-dev
+        apt-get update
+        apt-get install -y python3-rosdep libyaml-cpp-dev
         apt-get install -y wget build-essential gcc make cmake libssl-dev autoconf libtool pkg-config 
         apt-get install -y libpaho-mqtt-dev  libpaho-mqttpp-dev 
         apt-get install -y libboost-all-dev 
-        sudo apt-get install -y python3-pip libyaml-cpp-dev libjsoncpp-dev libcurl4-openssl-dev \
+        apt-get install -y python3-pip libyaml-cpp-dev libjsoncpp-dev libcurl4-openssl-dev \
                                 curl wget build-essential gcc make cmake libssl-dev autoconf \
-                                libtool pkg-config nodejs npm docker.io docker-compose
-        npm install -y react-router-dom
-        pip install flask
+                                libtool pkg-config
+        pip3 install flask
         if [ ! -f /etc/ros/rosdep/sources.list.d/20-default.list ]; then
-          sudo rosdep init
+          rosdep init
         fi
         export GRPC_INSTALL_DIR=$HOME/grpc_install_dir 
         mkdir -p $GRPC_INSTALL_DIR 
@@ -74,10 +81,9 @@ jobs:
         make -j$(nproc --ignore=2) 
         make install 
         cd -
-        sudo rosdep fix-permissions
         rosdep update --include-eol-distros --rosdistro=humble
         cd $GITHUB_WORKSPACE/wisevision_ws/wisevision.proj
-        rosdep install --from-path src -i -y --rosdistro humble  --skip-keys="Boost PahoMqtt"
+        rosdep install --from-paths src -i -y --rosdistro humble --skip-keys="Boost PahoMqtt"
 
     - name: Build test
       run: |
@@ -86,17 +92,22 @@ jobs:
         export LD_LIBRARY_PATH=$GRPC_INSTALL_DIR/lib:$LD_LIBRARY_PATH
         cd wisevision_ws
         . /opt/ros/humble/setup.sh
-        colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release
+        # Keep logs streaming and reduce parallelism to avoid apparent hangs on heavy packages.
+        colcon build \
+          --symlink-install \
+          --event-handlers console_direct+ \
+          --executor sequential \
+          --parallel-workers 1 \
+          --cmake-args -DCMAKE_BUILD_TYPE=Release -DCMAKE_VERBOSE_MAKEFILE=ON
 
     - name: Test result summary
       run: |
         cd wisevision_ws
         . /opt/ros/humble/setup.sh
-        colcon test --executor sequential
+        colcon test --executor sequential --event-handlers console_direct+
         colcon test-result --verbose
 
     - name: Clean up workspace
       if: always()
       run: |
-        sudo rm -rf wisevision_ws
-
+        rm -rf wisevision_ws
