@@ -12,11 +12,11 @@ jobs:
       snap-file: ${{ steps.build-snap.outputs.snap }}
     steps:
 
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v5
       with:
         fetch-tags: true
 
-    - uses: snapcore/action-build@v1
+    - uses: canonical/action-build@v1.3.0
       with:
         snapcraft-channel: latest/edge
       id: build-snap
@@ -25,7 +25,7 @@ jobs:
 
     # Make sure the snap is installable
     - run: |
-        sudo snap install --dangerous ${{ steps.build-snap.outputs.snap }}
+        sudo snap install --devmode --dangerous ${{ steps.build-snap.outputs.snap }}
 
     # Save snap for subsequent job(s)
     - uses: actions/upload-artifact@v4
@@ -45,7 +45,7 @@ jobs:
         path: .
 
     # Publish the snap on the store
-    - uses: snapcore/action-publish@v1
+    - uses: canonical/action-publish@v1
       id: publish_snap
       env:
         SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_LOGIN }}
